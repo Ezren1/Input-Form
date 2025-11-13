@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Universal Intelligence Intake Portal [v3.0 Advanced]</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Universal Intelligence Intake Portal [v5.0 Stable]</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -11,163 +11,215 @@
 <style>
 :root {
   --bg-darkest: #050505;
-  --bg-dark: #101010;
-  --bg-mid: #1A1A1A;
-  --border-color: #2A2A2A;
-  --text-light: #F0F0F0;
-  --text-mid: #999;
+  --bg-dark: #0F1115;
+  --bg-mid: #181B21;
+  --border-color: #2A2E35;
+  --text-light: #F0F2F5;
+  --text-mid: #889096;
   --primary-blue: #00AFFF;
   --primary-hover: #33CFFF;
-  --primary-glow: rgba(0, 175, 255, 0.2);
-  --secondary-teal: #00FFFF;
-  --success: #00FF7F;
-  --error: #FF4D4D;
+  --primary-glow: rgba(0, 175, 255, 0.15);
+  --success: #00E676;
+  --error: #FF3D57;
+  --input-bg: #13161B;
 }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
 html { font-size: 16px; scroll-behavior: smooth; }
+
 body {
-  margin: 0;
   background: var(--bg-darkest);
   font-family: "Montserrat", sans-serif;
   color: var(--text-light);
   line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
+
+/* --- Layout --- */
 .container {
-  max-width: 900px;
+  width: 100%;
+  max-width: 850px;
   margin: 40px auto;
-  padding: clamp(25px, 5vw, 50px);
+  padding: clamp(20px, 5vw, 40px);
   background: var(--bg-dark);
-  border-radius: 16px;
+  border-radius: 20px;
   border: 1px solid var(--border-color);
-  box-shadow: 0 10px 60px var(--primary-glow);
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
 }
+
+/* Top Glow Effect */
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
+  opacity: 0.7;
+}
+
 h1 {
-  color: var(--primary-blue);
-  margin-top: 0;
+  color: var(--text-light);
   margin-bottom: 10px;
   text-align: center;
-  font-size: 2.5rem;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: -0.5px;
 }
+
+h1 span { color: var(--primary-blue); }
+
 h2 {
-  color: var(--primary-blue);
-  margin-bottom: 15px;
-  border-bottom: 1px solid var(--border-color);
+  color: var(--text-light);
+  margin-bottom: 25px;
   padding-bottom: 15px;
-  font-size: 1.75rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 1.5rem;
   font-weight: 600;
 }
+
 .subtitle {
   color: var(--text-mid);
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   text-align: center;
-  font-size: 1.1rem;
-  font-weight: 400;
+  font-size: 1rem;
 }
+
+/* --- Stepper --- */
 .step-indicator-container {
   display: flex;
   justify-content: space-between;
-  width: 80%;
-  margin: 0 auto 40px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 50px;
   position: relative;
 }
+
+/* The connecting line */
 .step-indicator-container::before {
   content: '';
   position: absolute;
   top: 50%;
-  left: 0;
-  width: 100%;
+  left: 10px;
+  right: 10px;
   height: 2px;
   background: var(--border-color);
   transform: translateY(-50%);
   z-index: 1;
 }
+
+/* The progress line (fills up as you go) */
+.progress-line {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  height: 2px;
+  background: var(--primary-blue);
+  transform: translateY(-50%);
+  z-index: 1;
+  width: 0%; /* JS updates this */
+  transition: width 0.4s ease;
+}
+
 .step-indicator {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   background: var(--bg-dark);
-  border: 3px solid var(--border-color);
+  border: 2px solid var(--border-color);
   z-index: 2;
-  transition: all 0.4s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-mid);
   font-weight: 600;
+  font-size: 0.9rem;
+  cursor: default;
 }
+
 .step-indicator.active {
   border-color: var(--primary-blue);
-  color: var(--primary-blue);
-  transform: scale(1.2);
-  box-shadow: 0 0 20px rgba(0, 175, 255, 0.7);
-  animation: pulse 1.5s infinite;
-}
-.step-indicator.completed {
+  color: var(--bg-darkest);
   background: var(--primary-blue);
+  transform: scale(1.1);
+  box-shadow: 0 0 25px var(--primary-glow);
+}
+
+.step-indicator.completed {
   border-color: var(--primary-blue);
-  color: var(--bg-dark);
-  font-weight: 700;
+  color: var(--primary-blue);
+  background: var(--bg-dark);
+  cursor: pointer; /* Allow clicking back */
 }
-@keyframes pulse {
-  0% { box-shadow: 0 0 20px rgba(0, 175, 255, 0.4); }
-  50% { box-shadow: 0 0 30px rgba(0, 175, 255, 0.8); }
-  100% { box-shadow: 0 0 20px rgba(0, 175, 255, 0.4); }
+
+.step-indicator.completed:hover {
+  background: rgba(0, 175, 255, 0.1);
 }
-@keyframes fadeIn {
+
+/* --- Forms --- */
+.step { display: none; animation: fadeSlideIn 0.4s ease forwards; }
+.step.active { display: block; }
+
+@keyframes fadeSlideIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.step { display: none; animation: fadeIn 0.5s ease-out; }
-.step.active { display: block; }
-.form-group { margin-bottom: 22px; position: relative; }
+
+.form-group { margin-bottom: 24px; position: relative; }
+
 label {
   display: block;
-  margin-bottom: 10px;
-  font-weight: 600;
-  font-size: 1rem;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
   color: var(--text-light);
 }
+
 label.optional::after {
   content: "(Optional)";
   font-weight: 400;
   color: var(--text-mid);
   margin-left: 8px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  opacity: 0.7;
 }
-input[type="text"],
-input[type="url"],
-input[type="email"],
-textarea,
-select {
+
+input[type="text"], input[type="url"], input[type="email"], textarea, select {
   width: 100%;
-  padding: 16px;
-  background: var(--bg-mid);
+  padding: 14px 16px;
+  background: var(--input-bg);
   border: 1px solid var(--border-color);
   color: var(--text-light);
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 1rem;
   font-family: "Montserrat", sans-serif;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: all 0.2s ease;
 }
-input[type="text"]:focus,
-input[type="url"]:focus,
-input[type="email"]:focus,
-textarea:focus,
-select:focus {
+
+/* Hover & Focus states */
+input:hover, textarea:hover, select:hover { border-color: #444; }
+
+input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--primary-blue);
-  box-shadow: 0 0 15px var(--primary-glow);
+  background: var(--bg-mid);
+  box-shadow: 0 0 0 3px rgba(0, 175, 255, 0.1);
 }
-textarea { resize: vertical; min-height: 140px; }
+
+/* Validation States */
+input.valid, textarea.valid, select.valid { border-color: rgba(0, 230, 118, 0.3); }
+input.invalid, textarea.invalid, select.invalid { border-color: var(--error); }
+
+textarea { resize: vertical; min-height: 120px; line-height: 1.5; }
+
+/* Custom Select Arrow */
 .select-wrapper { position: relative; }
-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding-right: 40px;
-}
+select { appearance: none; cursor: pointer; }
 .select-wrapper::after {
   content: '▼';
   position: absolute;
@@ -175,30 +227,29 @@ select {
   right: 16px;
   transform: translateY(-50%);
   color: var(--primary-blue);
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   pointer-events: none;
 }
-select option { background: var(--bg-dark); color: var(--text-light); }
-.invalid {
-  border-color: var(--error) !important;
-  box-shadow: 0 0 10px rgba(255, 77, 77, 0.3) !important;
-}
+
 .error-message {
   color: var(--error);
-  font-size: 0.9rem;
-  margin-top: 8px;
+  font-size: 0.85rem;
+  margin-top: 6px;
   display: none;
-  animation: fadeIn 0.3s;
+  font-weight: 500;
 }
+
+/* --- Buttons --- */
 .buttons { margin-top: 40px; display: flex; gap: 15px; }
+
 button {
   flex: 1;
-  padding: 18px;
+  padding: 16px;
   background: var(--primary-blue);
   border: none;
   color: var(--bg-darkest);
   font-weight: 700;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 1rem;
   cursor: pointer;
   text-transform: uppercase;
@@ -206,658 +257,595 @@ button {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 button:hover {
   background: var(--primary-hover);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 175, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 175, 255, 0.2);
 }
+
 button:disabled {
-  background: var(--border-color);
-  color: var(--text-mid);
+  background: #2A2A2A;
+  color: #555;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
-button .button-text { transition: opacity 0.2s ease-out; }
-button.loading .button-text { opacity: 0; }
+
 .back-btn {
-  background: var(--border-color);
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-mid);
+}
+
+.back-btn:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: var(--text-light);
   color: var(--text-light);
+  transform: translateY(-2px);
   box-shadow: none;
 }
-.back-btn:hover {
-  background: #333;
-  color: white;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
+
+/* Spinner */
 .loader-spinner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 24px;
-  height: 24px;
-  margin-top: -12px;
-  margin-left: -12px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: var(--bg-darkest);
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0,0,0,0.1);
+  border-top-color: #000;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   display: none;
+  margin-left: 10px;
 }
+.back-btn .loader-spinner { border-top-color: #fff; }
 button.loading .loader-spinner { display: block; }
 @keyframes spin { to { transform: rotate(360deg); } }
-#responseMessage {
-  text-align: center;
-  font-weight: 600;
-  font-size: 1.1rem;
-  margin-top: 30px;
-  display: none;
-  padding: 15px;
-  border-radius: 8px;
-  animation: fadeIn 0.3s;
-}
-#responseMessage.success {
-  color: var(--success);
-  background: rgba(0, 255, 127, 0.1);
-  border: 1px solid var(--success);
-  display: block;
-}
-#responseMessage.error {
-  color: var(--error);
-  background: rgba(255, 77, 77, 0.1);
-  border: 1px solid var(--error);
-  display: block;
-}
+
+/* --- File Upload Area --- */
 .drop-area {
-  margin-top: 15px;
   padding: 40px;
-  border: 2px dashed #666;
-  border-radius: 10px;
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
   text-align: center;
   color: var(--text-mid);
   cursor: pointer;
   transition: all 0.3s ease;
+  background: rgba(255,255,255,0.01);
 }
-.drop-area.dragover {
-  border-color: var(--secondary-teal);
-  border-style: solid;
+
+.drop-area:hover, .drop-area.dragover {
+  border-color: var(--primary-blue);
+  background: rgba(0, 175, 255, 0.05);
   color: var(--text-light);
-  background: var(--bg-mid);
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
 }
-.drop-area strong {
-  color: var(--secondary-teal);
-  display: block;
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-}
-.drop-area .upload-icon {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 15px;
-  color: var(--primary-blue);
-}
-.preview-toolbar {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 15px;
-  display: none;
-}
-#clearFilesBtn {
-  background: none;
-  border: 1px solid var(--error);
-  color: var(--error);
-  padding: 8px 15px;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-#clearFilesBtn:hover {
-  background: var(--error);
-  color: var(--bg-darkest);
-  box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
-  transform: none;
-}
-.preview {
-  margin-top: 10px;
+
+.drop-area svg { width: 48px; height: 48px; margin-bottom: 15px; color: var(--primary-blue); }
+
+.preview-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
 }
-.preview .file-item {
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  overflow: hidden;
+
+.file-card {
   background: var(--bg-mid);
-  text-align: center;
-  word-break: break-all;
-  animation: fadeIn 0.4s ease-out;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.8rem;
 }
-.preview .file-icon {
-  width: 100%;
-  height: 100px;
+
+.file-card-media {
+  height: 80px;
+  background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
-  color: var(--primary-blue);
-  background: var(--bg-dark);
-}
-.preview img,
-.preview video,
-.preview audio {
-  width: 100%;
-  height: 100px;
-  object-fit: cover;
-  display: block;
-}
-.preview audio {
-  height: 100px;
-  padding: 10px;
-  background: var(--bg-dark);
-}
-.preview .file-name {
-  padding: 10px;
-  font-size: 0.8rem;
   color: var(--text-mid);
+  font-size: 2rem;
+}
+.file-card-media img { width: 100%; height: 100%; object-fit: cover; }
+.file-card-name {
+  padding: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--text-light);
+}
+#clearFilesBtn {
+  margin-top: 10px;
+  background: transparent;
+  color: var(--error);
+  border: 1px solid var(--error);
+  padding: 8px;
+  font-size: 0.8rem;
+  display: none;
+}
+
+/* --- Response Messages --- */
+#responseMessage {
+  text-align: center;
+  font-weight: 600;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  display: none;
+}
+#responseMessage.success { background: rgba(0, 230, 118, 0.1); color: var(--success); border: 1px solid var(--success); }
+#responseMessage.error { background: rgba(255, 61, 87, 0.1); color: var(--error); border: 1px solid var(--error); }
+
+/* --- Mobile Tweaks --- */
+@media (max-width: 600px) {
+  .container { margin: 0; border: none; border-radius: 0; min-height: 100vh; }
+  h1 { font-size: 1.8rem; }
+  .buttons { gap: 10px; }
+  .step-indicator { width: 30px; height: 30px; font-size: 0.8rem; }
 }
 </style>
 </head>
 <body>
 
 <div class="container">
+  <h1>Universal <span>Intake</span></h1>
+  <p class="subtitle">Advanced data ingestion portal. Please complete all required fields.</p>
 
-  <h1>Universal Intelligence Intake</h1>
-  <p class="subtitle">An advanced portal engineered to handle any business scenario.</p>
-
-  <div class="step-indicator-container" id="stepIndicatorContainer">
-    <div class="step-indicator active" data-step="1"><span>1</span></div>
-    <div class="step-indicator" data-step="2"><span>2</span></div>
-    <div class="step-indicator" data-step="3"><span>3</span></div>
-    <div class="step-indicator" data-step="4"><span>4</span></div>
-    <div class="step-indicator" data-step="5"><span>5</span></div>
+  <div class="step-indicator-container">
+    <div class="progress-line" id="progressLine"></div>
+    <!-- data-step is 0-indexed in logic, 1-based for display -->
+    <div class="step-indicator active" onclick="goToStep(0)">1</div>
+    <div class="step-indicator" onclick="goToStep(1)">2</div>
+    <div class="step-indicator" onclick="goToStep(2)">3</div>
+    <div class="step-indicator" onclick="goToStep(3)">4</div>
+    <div class="step-indicator" onclick="goToStep(4)">5</div>
   </div>
 
-  <form id="intakeForm" enctype="multipart/form-data" novalidate>
+  <form id="intakeForm" novalidate>
 
-    <div class="step active">
-      <h2>1. Basic Business Information</h2>
+    <!-- STEP 1 -->
+    <div class="step active" id="step0">
+      <h2>Basic Intelligence</h2>
       <div class="form-group">
-        <label for="business_name">Business Name *</label>
-        <input type="text" id="business_name" name="business_name" required placeholder="e.g., Eclipse X" />
+        <label for="business_name">Business Entity Name *</label>
+        <input type="text" id="business_name" name="business_name" required placeholder="e.g., Acme Corp" />
         <span class="error-message">Business name is required.</span>
       </div>
       <div class="form-group">
-        <label for="website_main" class="optional">Main Website URL</label>
-        <input type="url" id="website_main" name="website_main" placeholder="https://example.com" />
-        <span class="error-message">Please enter a valid URL (e.g., https://example.com or example.com).</span>
+        <label for="website_main" class="optional">Primary Domain</label>
+        <input type="text" id="website_main" name="website_main" placeholder="example.com" />
+        <span class="error-message">Invalid URL format.</span>
       </div>
       <div class="form-group">
-        <label for="website_extra" class="optional">Additional Websites (one per line)</label>
-        <textarea id="website_extra" name="website_extra" placeholder="https://store.example.com&#10;https://blog.example.com"></textarea>
-        <span class="error-message">One or more URLs are invalid. Please check each line.</span>
-      </div>
-      <div class="form-group">
-        <label for="industry" class="optional">Industry</label>
-        <input type="text" id="industry" name="industry" placeholder="e.g., SaaS, Real Estate, E-commerce" />
+        <label for="website_extra" class="optional">Additional Domains (One per line)</label>
+        <textarea id="website_extra" name="website_extra" placeholder="store.example.com&#10;blog.example.com"></textarea>
       </div>
       <div class="buttons">
-        <button type="button" onclick="nextStep()"><span class="button-text">Next</span><div class="loader-spinner"></div></button>
+        <button type="button" onclick="nextStep()">Next &rarr;</button>
       </div>
     </div>
 
-    <div class="step">
-      <h2>2. Business Details & Strategy</h2>
+    <!-- STEP 2 -->
+    <div class="step" id="step1">
+      <h2>Strategy Definition</h2>
       <div class="form-group">
-        <label for="goal">Primary Objective *</label>
+        <label for="goal">Core Objective *</label>
         <div class="select-wrapper">
           <select id="goal" name="goal" required>
-            <option value="" disabled selected>Choose your main goal...</option>
-            <option value="lead_gen">Lead Generation</option>
-            <option value="brand_positioning">Premium Brand Positioning</option>
-            <option value="market_expansion">Market Expansion</option>
-            <option value="competitor_intel">Competitor Intelligence Audit</option>
-            <option value="full_audit">Full Business Audit (Web, SEO, Content)</option>
-            <option value="website_creation">New Website Creation</option>
-            <option value="other">Other (Describe in fallback)</option>
+            <option value="" disabled selected>Select primary objective...</option>
+            <option value="lead_gen">Lead Generation / Sales</option>
+            <option value="branding">Brand Positioning</option>
+            <option value="audit">Comprehensive Audit</option>
+            <option value="expansion">Market Expansion</option>
+            <option value="other">Other (Specify below)</option>
           </select>
         </div>
-        <span class="error-message">Please select your primary objective.</span>
+        <span class="error-message">Selection required.</span>
       </div>
       <div class="form-group">
-        <label for="description" class="optional">Describe Your Business</label>
-        <textarea id="description" name="description" rows="5" placeholder="What do you do? What problems do you solve?"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="target_audience" class="optional">Target Audience</label>
-        <textarea id="target_audience" name="target_audience" placeholder="Who are your ideal customers? (Demographics, interests, etc.)"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="socials" class="optional">Social Media Links (one per line)</label>
-        <textarea id="socials" name="socials" placeholder="https://instagram.com/yourbrand&#10;https://twitter.com/yourbrand"></textarea>
-        <span class="error-message">One or more URLs are invalid. Please check each line.</span>
+        <label for="description" class="optional">Business Description</label>
+        <textarea id="description" name="description" placeholder="What specific problems do you solve?"></textarea>
       </div>
       <div class="buttons">
-        <button type="button" class="back-btn" onclick="prevStep()"><span class="button-text">Back</span><div class="loader-spinner"></div></button>
-        <button type="button" onclick="nextStep()"><span class="button-text">Next</span><div class="loader-spinner"></div></button>
+        <button type="button" class="back-btn" onclick="prevStep()">Back</button>
+        <button type="button" onclick="nextStep()">Next &rarr;</button>
       </div>
     </div>
 
-    <div class="step">
-      <h2>3. Competitor Intelligence</h2>
+    <!-- STEP 3 -->
+    <div class="step" id="step2">
+      <h2>Competitor Intel</h2>
       <div class="form-group">
-        <label for="competitors" class="optional">Competitors (URLs or names, one per line)</label>
-        <textarea id="competitors" name="competitors" placeholder="https://competitor1.com&#10;Competitor Brand 2"></textarea>
-        </div>
-      <div class="form-group">
-        <label for="deep_scrape">Website Scraping Level (Your Site) *</label>
-        <div class="select-wrapper">
-          <select id="deep_scrape" name="deep_scrape" required>
-            <option value="" disabled selected>Select scraping depth...</option>
-            <option value="no">No Scraping</option>
-            <option value="basic">Basic Scrape (Homepage Only)</option>
-            <option value="deep_50">Deep Scrape (Up to 50 Pages)</option>
-            <option value="full_site">Full Site Scrape (Warning: Slow)</option>
-          </select>
-        </div>
-        <span class="error-message">Please select a scraping level.</span>
+        <label for="competitors" class="optional">Known Competitors (URLs or Names)</label>
+        <textarea id="competitors" name="competitors" placeholder="competitor1.com&#10;Competitor 2 Inc."></textarea>
       </div>
       <div class="form-group">
-        <label for="competitor_scrape">Competitor Scraping *</label>
+        <label for="scrape_depth">Data Scraping Level *</label>
         <div class="select-wrapper">
-          <select id="competitor_scrape" name="competitor_scrape" required>
-            <option value="" disabled selected>Scrape competitor sites?</option>
-            <option value="yes">Yes – Scrape competitor sites (if provided)</option>
-            <option value="no">No – Do not scrape competitors</option>
+          <select id="scrape_depth" name="scrape_depth" required>
+            <option value="" disabled selected>Select depth...</option>
+            <option value="none">Do not scrape my site</option>
+            <option value="basic">Basic (Homepage only)</option>
+            <option value="deep">Deep (Up to 50 pages)</option>
           </select>
         </div>
-        <span class="error-message">Please select a competitor scraping option.</span>
+        <span class="error-message">Required.</span>
       </div>
       <div class="buttons">
-        <button type="button" class="back-btn" onclick="prevStep()"><span class="button-text">Back</span><div class="loader-spinner"></div></button>
-        <button type="button" onclick="nextStep()"><span class="button-text">Next</span><div class="loader-spinner"></div></button>
+        <button type="button" class="back-btn" onclick="prevStep()">Back</button>
+        <button type="button" onclick="nextStep()">Next &rarr;</button>
       </div>
     </div>
 
-    <div class="step">
-      <h2>4. The "Everything" Upload Portal</h2>
-      <p class="subtitle" style="text-align:left; margin: -10px 0 20px 0; font-size: 1rem;">
-        Upload absolutely anything. We support all file types.
-      </p>
+    <!-- STEP 4 -->
+    <div class="step" id="step3">
+      <h2>Asset Upload</h2>
       <div class="form-group">
-        <label>Universal Drag & Drop</label>
         <div class="drop-area" id="dropArea">
-          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-            <path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <strong>Drag & Drop Files Here</strong>
-          <span style="font-size: 0.9rem;">(or click to browse)</span><br>
-          <small>Supports: ZIP, PDF, DOCX, MP4, MP3, AI, PSD, JPG, etc.</small>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+          <p><strong>Click or Drag Files Here</strong><br><small>Images, PDFs, Documents, Archives</small></p>
         </div>
         <input type="file" id="fileInput" name="files" multiple style="display:none;" />
-        <div class="preview-toolbar" id="previewToolbar">
-            <button type="button" id="clearFilesBtn">Clear All Files</button>
-        </div>
-        <div class="preview" id="filePreview"></div>
-      </div>
-      <div class="form-group">
-        <label for="logos" class="optional">Specific: Logos (Image, SVG, AI, ZIP)</label>
-        <input type="file" id="logos" name="logos" multiple accept="image/*,.zip,.ai,.svg" />
-      </div>
-      <div class="form-group">
-        <label for="brand_docs" class="optional">Specific: Brand Guidelines (PDF, DOCX, ZIP)</label>
-        <input type="file" id="brand_docs" name="brand_docs" multiple accept=".pdf,.docx,.zip" />
-      </div>
-      <div class="form-group">
-        <label for="catalogs" class="optional">Specific: Product Catalogs / Spreadsheets</label>
-        <input type="file" id="catalogs" name="catalogs" multiple accept=".pdf,.xls,.xlsx,.csv,.zip" />
-      </div>
-      <div class="form-group">
-        <label for="media_audio" class="optional">Specific: Audio (Voice Notes, Explainers)</label>
-        <input type="file" id="media_audio" name="media_audio" accept="audio/*" multiple />
+        
+        <div class="preview-grid" id="filePreview"></div>
+        <button type="button" id="clearFilesBtn">Clear All Files</button>
       </div>
       <div class="buttons">
-        <button type="button" class="back-btn" onclick="prevStep()"><span class="button-text">Back</span><div class="loader-spinner"></div></button>
-        <button type="button" onclick="nextStep()"><span class="button-text">Next</span><div class="loader-spinner"></div></button>
+        <button type="button" class="back-btn" onclick="prevStep()">Back</button>
+        <button type="button" onclick="nextStep()">Next &rarr;</button>
       </div>
     </div>
 
-    <div class="step">
-      <h2>5. Final Details & Submission</h2>
+    <!-- STEP 5 -->
+    <div class="step" id="step4">
+      <h2>Submission Protocol</h2>
       <div class="form-group">
-        <label for="fallback_info" class="optional">Worst-Case / Missing Info Handler</label>
-        <p class="subtitle" style="text-align:left; margin: -5px 0 10px 0; font-size: 0.9rem;">
-          If you have almost no info, just a name, or a complex idea, write it here.
-        </p>
-        <textarea id="fallback_info" name="fallback_info" rows="6" placeholder="e.g., 'My business is 'Eclipse X'. I have no website, no logo. I just want to sell premium tech accessories. Please help me build the brand from scratch.' ... or ... 'See the attached voice memo for a full explanation.'"></textarea>
+        <label for="email">Contact Email *</label>
+        <input type="email" id="email" name="email" required placeholder="name@company.com" />
+        <span class="error-message">Valid email required.</span>
       </div>
       <div class="form-group">
-        <label for="email">Your Email *</label>
-        <input type="email" id="email" name="email" required placeholder="your.email@example.com" />
-        <span class="error-message">A valid email is required for contact.</span>
+        <label for="notes" class="optional">Final Notes / Context</label>
+        <textarea id="notes" name="notes" placeholder="Any fallback instructions if data is missing?"></textarea>
       </div>
-      <input type="hidden" name="session_id" id="sessionID" />
-      <input type="hidden" name="timestamp" id="timestampField" />
-      <input type="hidden" name="user_agent" id="userAgentField" />
+      
+      <input type="hidden" name="timestamp" id="tsField">
+      
       <div class="buttons">
-        <button type="button" class="back-btn" onclick="prevStep()"><span class="button-text">Back</span><div class="loader-spinner"></div></button>
-        <button type="submit" id="submitButton"><span class="button-text">Submit All Intelligence</span><div class="loader-spinner"></div></button>
+        <button type="button" class="back-btn" onclick="prevStep()">Back</button>
+        <button type="submit" id="submitBtn">
+          <span class="btn-text">Submit Intelligence</span>
+          <div class="loader-spinner"></div>
+        </button>
       </div>
     </div>
-
-    <p id="responseMessage"></p>
-
   </form>
+
+  <div id="responseMessage"></div>
+
 </div>
 
 <script>
-// --- CORE STATE & ELEMENTS ---
+/* --- CONFIGURATION --- */
+// Set this to true to test the success animation without a real backend
+const SIMULATION_MODE = true; 
+// Replace with your N8N or Zapier Webhook URL
+const WEBHOOK_URL = "https://YOUR_WEBHOOK_URL_HERE"; 
+
+/* --- STATE MANAGEMENT --- */
 let currentStep = 0;
+const totalSteps = 5;
 const steps = document.querySelectorAll(".step");
-const stepIndicators = document.querySelectorAll(".step-indicator");
+const indicators = document.querySelectorAll(".step-indicator");
+const progressLine = document.getElementById("progressLine");
 const form = document.getElementById("intakeForm");
-const responseMessage = document.getElementById("responseMessage");
-const submitButton = document.getElementById("submitButton");
 
-// --- STEP NAVIGATION ---
-function updateStepIndicator() {
-  stepIndicators.forEach((indicator, index) => {
-    indicator.classList.remove("active", "completed");
-    const indicatorSpan = indicator.querySelector("span");
-    if (index < currentStep) {
-      indicator.classList.add("completed");
-      indicatorSpan.innerHTML = "&#10003;"; // Checkmark
-    } else if (index === currentStep) {
-      indicator.classList.add("active");
-      indicatorSpan.textContent = index + 1;
-    } else {
-      indicatorSpan.textContent = index + 1;
+/* --- NAVIGATION LOGIC --- */
+function updateUI() {
+  // Update Step Visibility
+  steps.forEach((step, idx) => {
+    step.classList.toggle("active", idx === currentStep);
+  });
+
+  // Update Indicators
+  indicators.forEach((ind, idx) => {
+    ind.classList.remove("active", "completed");
+    if (idx === currentStep) {
+      ind.classList.add("active");
+    } else if (idx < currentStep) {
+      ind.classList.add("completed");
     }
   });
+
+  // Update Progress Bar Line
+  const percent = (currentStep / (totalSteps - 1)) * 100;
+  progressLine.style.width = percent + "%";
 }
 
-function showStep(stepIndex) {
-  steps.forEach((step, i) => step.classList.toggle("active", i === stepIndex));
-  currentStep = stepIndex;
-  updateStepIndicator();
-}
-
-// --- 💡 [NEW] SMARTER, CENTRALIZED VALIDATION FUNCTION ---
-/**
- * Validates a single form field and updates its UI.
- * @param {HTMLElement} field - The input, textarea, or select element to validate.
- * @returns {boolean} - True if the field is valid, false otherwise.
- */
-function validateField(field) {
-  let isFieldValid = true;
-  const value = field.value; // Get raw value (trimming is just for presence check)
-  const trimmedValue = value.trim();
-  const type = field.type;
-  const id = field.id;
-  const isRequired = field.hasAttribute("required");
-
-  const formGroup = field.closest('.form-group');
-  const errorSpan = formGroup ? formGroup.querySelector('.error-message') : null;
-
-  // 1. --- Check for Required Fields ---
-  if (isRequired && trimmedValue === "") {
-    isFieldValid = false;
-  }
-  
-  // 2. --- Check for Format (if a value is present) ---
-  if (trimmedValue !== "") {
-    if (type === "email") {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(trimmedValue)) {
-        isFieldValid = false;
-      }
-    } 
-    else if (type === "url") {
-      // "Smart" URL validation: Accepts "google.com"
-      try {
-        new URL(trimmedValue); // Try as-is
-      } catch (_) {
-        try {
-          new URL("https://" + trimmedValue); // Try with https://
-        } catch (_) {
-          isFieldValid = false; // Both failed
-        }
-      }
-    }
-    else if (id === "website_extra" || id === "socials") {
-      // Multi-line URL validation for textareas
-      const lines = value.split('\n');
-      for (const line of lines) {
-        const trimmedLine = line.trim();
-        if (trimmedLine === "") continue; // Ignore empty lines
-
-        try {
-          new URL(trimmedLine);
-        } catch (_) {
-          try {
-            new URL("https://" + trimmedLine);
-          } catch (_) {
-            isFieldValid = false; // Any single invalid line fails the whole field
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  // 3. --- Apply Error Styling ---
-  if (!isFieldValid) {
-    field.classList.add("invalid");
-    if (errorSpan) errorSpan.style.display = "block";
-  } else {
-    field.classList.remove("invalid");
-    if (errorSpan) errorSpan.style.display = "none";
-  }
-  
-  return isFieldValid;
-}
-
-/**
- * Validates all fields in the current step.
- * @returns {boolean} - True if ALL fields in the step are valid.
- */
 function validateStep(stepIndex) {
-  let isStepValid = true;
-  const currentStepElement = steps[stepIndex];
-  const fields = currentStepElement.querySelectorAll("input, textarea, select");
-  
-  fields.forEach(field => {
-    // We run validateField on every field, which updates its UI.
-    // If any one of them returns false, the whole step is marked invalid.
-    if (!validateField(field)) {
-      isStepValid = false;
+  const currentStepEl = steps[stepIndex];
+  const inputs = currentStepEl.querySelectorAll("input, select, textarea");
+  let isValid = true;
+  let firstError = null;
+
+  inputs.forEach(input => {
+    if (!validateField(input)) {
+      isValid = false;
+      if (!firstError) firstError = input;
     }
   });
+
+  if (firstError) {
+    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    firstError.focus();
+  }
+
+  return isValid;
+}
+
+function validateField(input) {
+  // Skip validation for optional fields IF they are empty
+  // But if they have content (like a partial URL), we still validate format
+  const isRequired = input.hasAttribute("required");
+  const val = input.value.trim();
+  const parent = input.closest(".form-group");
+  const errorMsg = parent ? parent.querySelector(".error-message") : null;
   
-  return isStepValid;
+  let fieldValid = true;
+
+  // 1. Required Check
+  if (isRequired && val === "") {
+    fieldValid = false;
+  } 
+  
+  // 2. Email Check
+  if (fieldValid && val !== "" && input.type === "email") {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(val)) fieldValid = false;
+  }
+
+  // 3. URL Check (Smart)
+  if (fieldValid && val !== "" && (input.id.includes("website") || input.id.includes("competitors"))) {
+    // If textarea, split by lines
+    const lines = input.tagName === "TEXTAREA" ? val.split('\n') : [val];
+    
+    for (let line of lines) {
+      line = line.trim();
+      if (line === "") continue;
+      
+      // Auto-fix missing protocol for validation logic
+      let urlToTest = line;
+      if (!/^https?:\/\//i.test(line)) {
+        urlToTest = "https://" + line;
+      }
+      
+      try {
+        new URL(urlToTest);
+      } catch (e) {
+        fieldValid = false;
+        break;
+      }
+    }
+  }
+
+  // Visual Feedback
+  if (fieldValid) {
+    input.classList.remove("invalid");
+    input.classList.add("valid");
+    if (errorMsg) errorMsg.style.display = "none";
+  } else {
+    input.classList.add("invalid");
+    input.classList.remove("valid");
+    if (errorMsg) errorMsg.style.display = "block";
+  }
+
+  return fieldValid;
 }
 
 function nextStep() {
   if (validateStep(currentStep)) {
-    if (currentStep < steps.length - 1) {
-      showStep(currentStep + 1);
-    }
+    currentStep++;
+    updateUI();
+    window.scrollTo(0, 0);
   }
 }
 
 function prevStep() {
   if (currentStep > 0) {
-    showStep(currentStep - 1);
+    currentStep--;
+    updateUI();
   }
 }
 
-// --- 💡 [NEW] ADD REAL-TIME VALIDATION LISTENERS ---
-document.querySelectorAll("input, textarea, select").forEach(field => {
-  // Validate as user types
-  field.addEventListener("input", () => validateField(field));
-  // Validate when user clicks away
-  field.addEventListener("change", () => validateField(field));
+function goToStep(stepIndex) {
+  // Only allow clicking back to previously completed steps
+  if (stepIndex < currentStep) {
+    currentStep = stepIndex;
+    updateUI();
+  }
+}
+
+/* --- REAL-TIME VALIDATION LISTENER --- */
+document.querySelectorAll("input, textarea, select").forEach(el => {
+  el.addEventListener("blur", () => validateField(el));
+  el.addEventListener("input", () => {
+    // Remove error immediately when typing starts
+    el.classList.remove("invalid");
+    const parent = el.closest(".form-group");
+    if(parent && parent.querySelector(".error-message")) {
+      parent.querySelector(".error-message").style.display = "none";
+    }
+  });
 });
 
-// Initialize first step on load
-showStep(0);
-
-
-// --- ADVANCED FILE UPLOADER (No changes needed) ---
+/* --- FILE UPLOAD LOGIC --- */
 const dropArea = document.getElementById("dropArea");
 const fileInput = document.getElementById("fileInput");
 const filePreview = document.getElementById("filePreview");
-const previewToolbar = document.getElementById("previewToolbar");
-const clearFilesBtn = document.getElementById("clearFilesBtn");
-dropArea.onclick = () => fileInput.click();
-['dragenter', 'dragover'].forEach(eventName => {
-  dropArea.addEventListener(eventName, (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dropArea.classList.add("dragover");
-  }, false);
+const clearBtn = document.getElementById("clearFilesBtn");
+
+dropArea.addEventListener("click", () => fileInput.click());
+
+["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
+  dropArea.addEventListener(eventName, preventDefaults, false);
 });
-['dragleave', 'drop'].forEach(eventName => {
-  dropArea.addEventListener(eventName, (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dropArea.classList.remove("dragover");
-  }, false);
+
+function preventDefaults(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+["dragenter", "dragover"].forEach(eventName => {
+  dropArea.addEventListener(eventName, () => dropArea.classList.add("dragover"), false);
 });
-dropArea.addEventListener("drop", (e) => {
+
+["dragleave", "drop"].forEach(eventName => {
+  dropArea.addEventListener(eventName, () => dropArea.classList.remove("dragover"), false);
+});
+
+dropArea.addEventListener("drop", handleDrop, false);
+fileInput.addEventListener("change", function() { handleFiles(this.files) });
+
+function handleDrop(e) {
   const dt = e.dataTransfer;
   const files = dt.files;
-  fileInput.files = files;
-  previewFiles(files);
-});
-fileInput.addEventListener("change", () => {
-  previewFiles(fileInput.files);
-});
-clearFilesBtn.addEventListener("click", () => {
-    fileInput.value = null;
-    filePreview.innerHTML = "";
-    previewToolbar.style.display = "none";
-});
-function getFileIcon(fileType) {
-  if (fileType.includes("zip") || fileType.includes("archive")) return "📦";
-  if (fileType.includes("pdf")) return "📕";
-  if (fileType.includes("document") || fileType.includes("word")) return "📝";
-  if (fileType.includes("spreadsheet") || fileType.includes("excel")) return "📊";
-  if (fileType.includes("presentation") || fileType.includes("powerpoint")) return "💻";
-  if (fileType.includes("photoshop")) return "🖌";
-  if (fileType.includes("illustrator")) return "✒";
-  return "📄"; // Generic Page
+  fileInput.files = files; // Update input (Note: simple assignment for demo)
+  handleFiles(files);
 }
-function previewFiles(files) {
+
+function handleFiles(files) {
   filePreview.innerHTML = "";
-  if (!files || files.length === 0) {
-    previewToolbar.style.display = "none";
-    return;
+  if (files.length > 0) {
+    clearBtn.style.display = "inline-block";
+    [...files].forEach(previewFile);
+  } else {
+    clearBtn.style.display = "none";
   }
-  previewToolbar.style.display = "flex";
-  [...files].forEach(file => {
-    const reader = new FileReader();
-    const fileItem = document.createElement("div");
-    fileItem.className = "file-item";
-    const fileName = document.createElement("div");
-    fileName.className = "file-name";
-    fileName.textContent = file.name;
-    fileName.title = file.name;
+}
+
+function previewFile(file) {
+  const reader = new FileReader();
+  const card = document.createElement("div");
+  card.className = "file-card";
+  
+  const mediaDiv = document.createElement("div");
+  mediaDiv.className = "file-card-media";
+  
+  const nameDiv = document.createElement("div");
+  nameDiv.className = "file-card-name";
+  nameDiv.textContent = file.name;
+
+  reader.readAsDataURL(file);
+  reader.onloadend = function() {
     if (file.type.startsWith("image/")) {
-      reader.onload = (e) => {
-        const img = document.createElement("img");
-        img.src = e.target.result;
-        fileItem.prepend(img);
-      };
-      reader.readAsDataURL(file);
-    } else if (file.type.startsWith("video/")) {
-      const video = document.createElement("video");
-      video.src = URL.createObjectURL(file);
-      video.controls = false;
-      video.muted = true;
-      fileItem.prepend(video);
-    } else if (file.type.startsWith("audio/")) {
-      const audio = document.createElement("audio");
-audio.src = URL.createObjectURL(file);
-audio.controls = true;
-fileItem.prepend(audio);
+      const img = document.createElement("img");
+      img.src = reader.result;
+      mediaDiv.appendChild(img);
     } else {
-      const fileIcon = document.createElement("div");
-      fileIcon.className = "file-icon";
-      fileIcon.textContent = getFileIcon(file.type);
-      fileItem.prepend(fileIcon);
+      mediaDiv.textContent = getIcon(file.type);
     }
-    fileItem.appendChild(fileName);
-    filePreview.appendChild(fileItem);
-  });
+    card.appendChild(mediaDiv);
+    card.appendChild(nameDiv);
+    filePreview.appendChild(card);
+  }
 }
 
-// --- METADATA & FORM SUBMISSION ---
-function populateMetadata() {
-  document.getElementById("sessionID").value = "SID-" + Date.now() + "-" + Math.random().toString(36).slice(2);
-  document.getElementById("timestampField").value = new Date().toISOString();
-  document.getElementById("userAgentField").value = navigator.userAgent;
+function getIcon(type) {
+  if (type.includes("pdf")) return "📄";
+  if (type.includes("spreadsheet") || type.includes("excel") || type.includes("csv")) return "📊";
+  if (type.includes("word") || type.includes("document")) return "📝";
+  if (type.includes("zip")) return "📦";
+  return "📁";
 }
 
-form.addEventListener("submit", async function(e) {
+clearBtn.addEventListener("click", (e) => {
+  e.stopPropagation(); // Prevent triggering dropArea click
+  fileInput.value = "";
+  filePreview.innerHTML = "";
+  clearBtn.style.display = "none";
+});
+
+/* --- FORM SUBMISSION --- */
+// Prevent "Enter" key from submitting form prematurely
+window.addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && e.target.nodeName !== "TEXTAREA" && e.target.nodeName !== "BUTTON") {
+    e.preventDefault();
+    // If we are on last step, verify, else trigger next
+    if(currentStep < totalSteps - 1) {
+      nextStep();
+    }
+  }
+});
+
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
   
-  // Validate the final step before submitting
-  if (!validateStep(currentStep)) {
-    return; // Don't submit if final step is invalid
-  }
+  // Final Validation
+  if (!validateStep(currentStep)) return;
 
-  // --- 🚨🚨🚨 THIS IS THE CRITICAL ERROR 🚨🚨🚨 ---
-  // ---     YOU MUST REPLACE "WEBHOOK_URL_HERE"     ---
-  const N8N_WEBHOOK_URL = "WEBHOOK_URL_HERE"; 
-  // ----------------------------------------------------
+  const btn = document.getElementById("submitBtn");
+  const msg = document.getElementById("responseMessage");
+  const ts = document.getElementById("tsField");
   
-  if (N8N_WEBHOOK_URL === "WEBHOOK_URL_HERE") {
-    responseMessage.className = "error";
-    responseMessage.textContent = "DEVELOPER: Please set the N8N_WEBHOOK_URL in the <script> tag.";
-    return;
-  }
-
-  populateMetadata();
-  submitButton.classList.add("loading");
-  submitButton.disabled = true;
-  responseMessage.className = "";
-  responseMessage.style.display = "none";
-  responseMessage.textContent = "";
+  ts.value = new Date().toISOString();
+  
+  btn.disabled = true;
+  btn.classList.add("loading");
+  msg.style.display = "none";
 
   const formData = new FormData(form);
 
-  try {
-    const response = await fetch(N8N_WEBHOOK_URL, {
-      method: "POST",
-      body: formData,
-    });
-    if (response.ok) {
-      responseMessage.className = "success";
-      responseMessage.textContent = "✅ Intelligence package submitted successfully! We will be in touch.";
-      form.reset();
-      filePreview.innerHTML = "";
-      previewToolbar.style.display = "none";
-      showStep(0);
-    } else {
-      const errorText = await response.text();
-      responseMessage.className = "error";
-      responseMessage.textContent = Error: Submission failed (Status: ${response.status}). Please try again.;
-      console.error("Submission error:", response.status, errorText);
+  // --- SIMULATION MODE OR REAL FETCH ---
+  if (SIMULATION_MODE) {
+    // Fake network delay
+    setTimeout(() => {
+      btn.classList.remove("loading");
+      btn.disabled = false;
+      msg.className = "success";
+      msg.innerHTML = "✅ <strong>Simulation Success:</strong> Data is valid and ready.<br>Connect a real Webhook URL in the code to go live.";
+      msg.style.display = "block";
+      msg.scrollIntoView({ behavior: 'smooth' });
+      console.log("Form Data Simulated:", Object.fromEntries(formData));
+    }, 1500);
+  } else {
+    // Real Submission
+    try {
+      const response = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        body: formData
+      });
+
+      btn.classList.remove("loading");
+      btn.disabled = false;
+
+      if (response.ok) {
+        msg.className = "success";
+        msg.textContent = "Success! Intelligence package received.";
+        msg.style.display = "block";
+        form.reset();
+        filePreview.innerHTML = "";
+        currentStep = 0;
+        updateUI();
+      } else {
+        throw new Error("Server returned " + response.status);
+      }
+    } catch (err) {
+      btn.classList.remove("loading");
+      btn.disabled = false;
+      msg.className = "error";
+      msg.textContent = "Submission Failed: Check Webhook URL or Network.";
+      msg.style.display = "block";
+      console.error(err);
     }
-  } catch (err) {
-    responseMessage.className = "error";
-    responseMessage.textContent = "Error: Connection failed. Please check your network and try again.";
-    console.error("Network or fetch error:", err);
-  } finally {
-    submitButton.classList.remove("loading");
-    submitButton.disabled = false;
   }
 });
+
+// Initialize
+updateUI();
 </script>
+
 </body>
 </html>
