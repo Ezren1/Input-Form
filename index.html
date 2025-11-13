@@ -531,9 +531,9 @@ button.loading .loader-spinner { display: block; }
 <script>
 /* --- CONFIGURATION --- */
 // Set this to true to test the success animation without a real backend
-const SIMULATION_MODE = true; 
+const SIMULATION_MODE = false; 
 // Replace with your N8N or Zapier Webhook URL
-const WEBHOOK_URL = "https://YOUR_WEBHOOK_URL_HERE"; 
+const WEBHOOK_URL = "http://localhost:5678/webhook/intake"; 
 
 /* --- STATE MANAGEMENT --- */
 let currentStep = 0;
