@@ -1,351 +1,863 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Rusher's Guide - Ultimate Hinglish Guide</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --glow-blue: #00bfff;
-            --glow-pink: #ff00ff;
-            --glow-red: #ff1f4b;
-            --bg-dark: #0A0A14;
-            --bg-card: #10101E;
-            --border-color: rgba(255, 255, 255, 0.1);
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Universal Intelligence Intake Portal [v3.0 Advanced]</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: #EAEAEA;
-            overflow-x: hidden;
-        }
-        
-        body::-webkit-scrollbar { width: 8px; }
-        body::-webkit-scrollbar-track { background: var(--bg-dark); }
-        body::-webkit-scrollbar-thumb { background-color: var(--glow-blue); border-radius: 10px; border: 2px solid var(--bg-dark); }
-
-        .font-bebas { font-family: 'Bebas Neue', sans-serif; }
-
-        .glow-text-blue { text-shadow: 0 0 8px var(--glow-blue), 0 0 16px rgba(0, 191, 255, 0.5); }
-        .glow-text-pink { text-shadow: 0 0 8px var(--glow-pink), 0 0 16px rgba(255, 0, 255, 0.5); }
-
-        .hero-bg {
-            background-image: linear-gradient(to bottom, rgba(10, 10, 20, 0) 60%, var(--bg-dark) 100%),
-                              radial-gradient(ellipse 80% 80% at 50% -20%, rgba(0, 191, 255, 0.2), transparent);
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .section-heading { letter-spacing: 2px; font-size: clamp(2.5rem, 6vw, 5rem); }
-
-        .card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-color: var(--glow-blue); }
-
-        .video-placeholder {
-            aspect-ratio: 16 / 9;
-            background-color: #000;
-            border: 1px solid var(--border-color);
-            border-radius: 0.75rem;
-            display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .video-placeholder:hover {
-            transform: scale(1.03);
-            box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
-        }
-        .video-placeholder .play-button { width: 64px; height: 64px; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: transform 0.3s ease; }
-        .video-placeholder:hover .play-button { transform: scale(1.1); }
-
-        .nav { background: rgba(16, 16, 30, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); }
-
-        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1); }
-        .reveal.visible { opacity: 1; transform: translateY(0); }
-
-        .stagger-1 { transition-delay: 100ms; } .stagger-2 { transition-delay: 200ms; } .stagger-3 { transition-delay: 300ms; }
-        
-        .tab-btn { background-color: transparent; border: 1px solid var(--border-color); color: #a0a0a0; padding: 0.5rem 1rem; border-radius: 999px; transition: all 0.3s ease; font-weight: 500;}
-        .tab-btn.active { background-color: var(--glow-blue); color: var(--bg-dark); border-color: var(--glow-blue); font-weight: 700; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-    </style>
+<style>
+:root {
+  --bg-darkest: #050505;
+  --bg-dark: #101010;
+  --bg-mid: #1A1A1A;
+  --border-color: #2A2A2A;
+  --text-light: #F0F0F0;
+  --text-mid: #999;
+  --primary-blue: #00AFFF;
+  --primary-hover: #33CFFF;
+  --primary-glow: rgba(0, 175, 255, 0.2);
+  --secondary-teal: #00FFFF;
+  --success: #00FF7F;
+  --error: #FF4D4D;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg-darkest);
+  font-family: "Montserrat", sans-serif;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: clamp(25px, 5vw, 50px);
+  background: var(--bg-dark);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 60px var(--primary-glow);
+}
+h1 {
+  color: var(--primary-blue);
+  margin-top: 0;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+h2 {
+  color: var(--primary-blue);
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 15px;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+.subtitle {
+  color: var(--text-mid);
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+.step-indicator-container {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  margin: 0 auto 40px;
+  position: relative;
+}
+.step-indicator-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--border-color);
+  transform: translateY(-50%);
+  z-index: 1;
+}
+.step-indicator {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--bg-dark);
+  border: 3px solid var(--border-color);
+  z-index: 2;
+  transition: all 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-mid);
+  font-weight: 600;
+}
+.step-indicator.active {
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+  transform: scale(1.2);
+  box-shadow: 0 0 20px rgba(0, 175, 255, 0.7);
+  animation: pulse 1.5s infinite;
+}
+.step-indicator.completed {
+  background: var(--primary-blue);
+  border-color: var(--primary-blue);
+  color: var(--bg-dark);
+  font-weight: 700;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 20px rgba(0, 175, 255, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(0, 175, 255, 0.8); }
+  100% { box-shadow: 0 0 20px rgba(0, 175, 255, 0.4); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.step { display: none; animation: fadeIn 0.5s ease-out; }
+.step.active { display: block; }
+.form-group { margin-bottom: 22px; position: relative; }
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-light);
+}
+label.optional::after {
+  content: "(Optional)";
+  font-weight: 400;
+  color: var(--text-mid);
+  margin-left: 8px;
+  font-size: 0.9rem;
+}
+input[type="text"],
+input[type="url"],
+input[type="email"],
+textarea,
+select {
+  width: 100%;
+  padding: 16px;
+  background: var(--bg-mid);
+  border: 1px solid var(--border-color);
+  color: var(--text-light);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: "Montserrat", sans-serif;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+input[type="text"]:focus,
+input[type="url"]:focus,
+input[type="email"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+textarea { resize: vertical; min-height: 140px; }
+.select-wrapper { position: relative; }
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 40px;
+}
+.select-wrapper::after {
+  content: '▼';
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  color: var(--primary-blue);
+  font-size: 0.8rem;
+  pointer-events: none;
+}
+select option { background: var(--bg-dark); color: var(--text-light); }
+.invalid {
+  border-color: var(--error) !important;
+  box-shadow: 0 0 10px rgba(255, 77, 77, 0.3) !important;
+}
+.error-message {
+  color: var(--error);
+  font-size: 0.9rem;
+  margin-top: 8px;
+  display: none;
+  animation: fadeIn 0.3s;
+}
+.buttons { margin-top: 40px; display: flex; gap: 15px; }
+button {
+  flex: 1;
+  padding: 18px;
+  background: var(--primary-blue);
+  border: none;
+  color: var(--bg-darkest);
+  font-weight: 700;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 175, 255, 0.25);
+}
+button:disabled {
+  background: var(--border-color);
+  color: var(--text-mid);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+button .button-text { transition: opacity 0.2s ease-out; }
+button.loading .button-text { opacity: 0; }
+.back-btn {
+  background: var(--border-color);
+  color: var(--text-light);
+  box-shadow: none;
+}
+.back-btn:hover {
+  background: #333;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+.loader-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin-top: -12px;
+  margin-left: -12px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--bg-darkest);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: none;
+}
+button.loading .loader-spinner { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+#responseMessage {
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-top: 30px;
+  display: none;
+  padding: 15px;
+  border-radius: 8px;
+  animation: fadeIn 0.3s;
+}
+#responseMessage.success {
+  color: var(--success);
+  background: rgba(0, 255, 127, 0.1);
+  border: 1px solid var(--success);
+  display: block;
+}
+#responseMessage.error {
+  color: var(--error);
+  background: rgba(255, 77, 77, 0.1);
+  border: 1px solid var(--error);
+  display: block;
+}
+.drop-area {
+  margin-top: 15px;
+  padding: 40px;
+  border: 2px dashed #666;
+  border-radius: 10px;
+  text-align: center;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.drop-area.dragover {
+  border-color: var(--secondary-teal);
+  border-style: solid;
+  color: var(--text-light);
+  background: var(--bg-mid);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+}
+.drop-area strong {
+  color: var(--secondary-teal);
+  display: block;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+.drop-area .upload-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 15px;
+  color: var(--primary-blue);
+}
+.preview-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+  display: none;
+}
+#clearFilesBtn {
+  background: none;
+  border: 1px solid var(--error);
+  color: var(--error);
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+#clearFilesBtn:hover {
+  background: var(--error);
+  color: var(--bg-darkest);
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
+  transform: none;
+}
+.preview {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 15px;
+}
+.preview .file-item {
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  background: var(--bg-mid);
+  text-align: center;
+  word-break: break-all;
+  animation: fadeIn 0.4s ease-out;
+}
+.preview .file-icon {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: var(--primary-blue);
+  background: var(--bg-dark);
+}
+.preview img,
+.preview video,
+.preview audio {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  display: block;
+}
+.preview audio {
+  height: 100px;
+  padding: 10px;
+  background: var(--bg-dark);
+}
+.preview .file-name {
+  padding: 10px;
+  font-size: 0.8rem;
+  color: var(--text-mid);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>
 </head>
-<body class="antialiased">
-    <!-- Header/Nav -->
-    <header id="header" class="nav sticky top-0 z-50 transition-all duration-300">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="font-bebas text-2xl tracking-widest"><span class="text-[var(--glow-blue)]">RUSHER'S</span><span class="text-white">GUIDE</span></h1>
-            <nav class="hidden md:flex space-x-6 lg:space-x-8 font-semibold text-sm">
-                <a href="#intro" class="hover:text-[var(--glow-blue)] transition-colors">Aapka Role</a>
-                <a href="#tactics" class="hover:text-[var(--glow-blue)] transition-colors">Core Tactics</a>
-                <a href="#advanced" class="hover:text-[var(--glow-blue)] transition-colors">Advanced Concepts</a>
-                <a href="#decision" class="hover:text-[var(--glow-blue)] transition-colors">Decision Making</a>
-                <a href="#mindset" class="hover:text-[var(--glow-blue)] transition-colors">Mindset</a>
-                <a href="#training" class="hover:text-[var(--glow-blue)] transition-colors">Training Drills</a>
-            </nav>
+<body>
+
+<div class="container">
+
+  <h1>Universal Intelligence Intake</h1>
+  <p class="subtitle">An advanced portal engineered to handle any business scenario.</p>
+
+  <div class="step-indicator-container" id="stepIndicatorContainer">
+    <div class="step-indicator active" data-step="1"><span>1</span></div>
+    <div class="step-indicator" data-step="2"><span>2</span></div>
+    <div class="step-indicator" data-step="3"><span>3</span></div>
+    <div class="step-indicator" data-step="4"><span>4</span></div>
+    <div class="step-indicator" data-step="5"><span>5</span></div>
+  </div>
+
+  <form id="intakeForm" enctype="multipart/form-data" novalidate>
+
+    <div class="step active">
+      <h2>1. Basic Business Information</h2>
+      <div class="form-group">
+        <label for="business_name">Business Name *</label>
+        <input type="text" id="business_name" name="business_name" required placeholder="e.g., Eclipse X" />
+        <span class="error-message">Business name is required.</span>
+      </div>
+      <div class="form-group">
+        <label for="website_main" class="optional">Main Website URL</label>
+        <input type="url" id="website_main" name="website_main" placeholder="https://example.com" />
+        <span class="error-message">Please enter a valid URL (e.g., https://example.com or example.com).</span>
+      </div>
+      <div class="form-group">
+        <label for="website_extra" class="optional">Additional Websites (one per line)</label>
+        <textarea id="website_extra" name="website_extra" placeholder="https://store.example.com&#10;https://blog.example.com"></textarea>
+        <span class="error-message">One or more URLs are invalid. Please check each line.</span>
+      </div>
+      <div class="form-group">
+        <label for="industry" class="optional">Industry</label>
+        <input type="text" id="industry" name="industry" placeholder="e.g., SaaS, Real Estate, E-commerce" />
+      </div>
+      <div class="buttons">
+        <button type="button" onclick="nextStep()"><span class="button-text">Next</span><div class="loader-spinner"></div></button>
+      </div>
+    </div>
+
+    <div class="step">
+      <h2>2. Business Details & Strategy</h2>
+      <div class="form-group">
+        <label for="goal">Primary Objective *</label>
+        <div class="select-wrapper">
+          <select id="goal" name="goal" required>
+            <option value="" disabled selected>Choose your main goal...</option>
+            <option value="lead_gen">Lead Generation</option>
+            <option value="brand_positioning">Premium Brand Positioning</option>
+            <option value="market_expansion">Market Expansion</option>
+            <option value="competitor_intel">Competitor Intelligence Audit</option>
+            <option value="full_audit">Full Business Audit (Web, SEO, Content)</option>
+            <option value="website_creation">New Website Creation</option>
+            <option value="other">Other (Describe in fallback)</option>
+          </select>
         </div>
-    </header>
+        <span class="error-message">Please select your primary objective.</span>
+      </div>
+      <div class="form-group">
+        <label for="description" class="optional">Describe Your Business</label>
+        <textarea id="description" name="description" rows="5" placeholder="What do you do? What problems do you solve?"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="target_audience" class="optional">Target Audience</label>
+        <textarea id="target_audience" name="target_audience" placeholder="Who are your ideal customers? (Demographics, interests, etc.)"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="socials" class="optional">Social Media Links (one per line)</label>
+        <textarea id="socials" name="socials" placeholder="https://instagram.com/yourbrand&#10;https://twitter.com/yourbrand"></textarea>
+        <span class="error-message">One or more URLs are invalid. Please check each line.</span>
+      </div>
+      <div class="buttons">
+        <button type="button" class="back-btn" onclick="prevStep()"><span class="button-text">Back</span><div class="loader-spinner"></div></button>
+        <button type="button" onclick="nextStep()"><span class="button-text">Next</span><div class="loader-spinner"></div></button>
+      </div>
+    </div>
 
-    <main>
-        <!-- Hero Section -->
-        <section class="hero-bg h-screen flex items-center justify-center text-center -mt-[80px] pt-[80px]">
-            <div class="container mx-auto px-6">
-                <h1 class="font-bebas text-6xl md:text-8xl lg:text-9xl tracking-wider glow-text-blue reveal">PRIMARY RUSHER</h1>
-                <p class="font-bebas text-3xl md:text-4xl lg:text-5xl text-white tracking-widest mt-2 reveal stagger-1">The Ultimate Hinglish Guide</p>
-                <p class="max-w-3xl mx-auto mt-6 text-gray-300 reveal stagger-2">Yeh video ki demand itni thi, aur ab woh din aa chuka hai. Hum sirf tips nahi, balki international rushers jaise <span class="font-bold text-[var(--glow-pink)]">Wasanaa</span> ki har micro-level cheez, har mistake, aur har pro-move ko decode karenge.</p>
-                <a href="#intro" class="inline-block bg-[var(--glow-blue)] text-black font-bold py-3 px-8 rounded-full mt-8 hover:bg-white transition-all transform hover:scale-105 reveal stagger-3">
-                    Chalo, Shuruat Karte Hain
-                </a>
-            </div>
-        </section>
-
-        <div class="container mx-auto px-6 py-20 md:py-32">
-            <!-- Introduction Section -->
-            <section id="intro" class="mb-20 md:mb-32">
-                <h2 class="font-bebas section-heading text-center reveal">RUSHER <span class="text-[var(--glow-blue)]">KA ASLI ROLE</span></h2>
-                <p class="text-center max-w-2xl mx-auto mt-4 text-gray-400 reveal stagger-1">Primary Rusher ka kaam sirf 'ghus ke marna' nahi hai. Aap team ke playmaker, momentum-setter aur sabse important, fight ke director ho. Apne role ko a-to-z samjho.</p>
-                <div class="grid md:grid-cols-3 gap-8 mt-12">
-                    <div class="card p-8 reveal stagger-1">
-                        <h3 class="font-bebas text-3xl text-[var(--glow-blue)] tracking-wider">Breach & Create Chaos</h3>
-                        <p class="mt-2 text-gray-300">Aapka kaam hai enemy ke set-up (jaise Gloo Wall ka cover) ko todna aur unke formation mein aisi khalbali machana ki woh apni position se hil jaayein. Aapke chaos se hi team ke liye opening banti hai.</p>
-                    </div>
-                    <div class="card p-8 reveal stagger-2">
-                        <h3 class="font-bebas text-3xl text-[var(--glow-blue)] tracking-wider">Live Intel & Playmaking</h3>
-                        <p class="mt-2 text-gray-300">Jab aap push karte ho, toh team ko live information milti hai—enemy kahan hai, kitna damage hai, kaun solo hai. Yeh intel aapke IGL aur support players ko agla move decide karne mein help karti hai.</p>
-                    </div>
-                    <div class="card p-8 reveal stagger-3">
-                        <h3 class="font-bebas text-3xl text-[var(--glow-blue)] tracking-wider">Dictate The Engagement</h3>
-                        <p class="mt-2 text-gray-300">Ek pro rusher fight ko apne hisaab se chalata hai. Dushman ko react karne par majboor karo, unhe apni strategy banane ka mauka hi mat do. Aap proactive ho, woh reactive. Yahi jeet ka formula hai.</p>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Core Tactics Section -->
-            <section id="tactics" class="mb-20 md:mb-32">
-                <h2 class="font-bebas section-heading text-center reveal">CORE <span class="text-[var(--glow-pink)]">TACTICS</span></h2>
-                <p class="text-center max-w-2xl mx-auto mt-4 text-gray-400 reveal stagger-1">Yeh woh fundamental skills hain jo har elite rusher ke DNA mein hoti hain. Inhe master kiye bina aage badhna namumkin hai.</p>
-
-                <!-- Tactic 1: Sniper Covers -->
-                <div class="card p-8 md:p-12 mt-16 reveal">
-                    <div class="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
-                        <div>
-                            <span class="font-bebas text-xl text-[var(--glow-blue)]">CORE TACTIC 01</span>
-                            <h3 class="font-bebas text-5xl mt-1">Sniper Cover Ko Respect Do</h3>
-                            <p class="mt-4 text-gray-300">Sabse badi galti jo 90% rushers karte hain: ek knock milte hi kill ki laalach mein open mein bhaag jaate hain. Woh yeh bhool jaate hain ki dushman ka sniper unpar hi aim karke baitha hai. Pro players jaante hain, <span class="text-white font-semibold">kill se zyaada important fight jeetna hai.</span></p>
-                            <div class="mt-6 border-l-4 border-[var(--glow-blue)] pl-4">
-                                <h4 class="font-bold text-lg text-white">Wasanaa ka Example:</h4>
-                                <p class="text-sm text-gray-400 mt-1">BRU vs GOW fight mein, Wasanaa ne knock nikalne ke baad over-extend karke finish karne ki koshish nahi ki. Usne Tatsuya ko <span class="font-bold text-yellow-300">peeche ki taraf</span> use karke khud ko safe kiya. Usne fight control ki, over-extend nahi kiya.</p>
-                            </div>
-                        </div>
-                        <div class="video-placeholder" onclick="window.open('https://youtu.be/7C06BkqJQN0?si=4QN677Osiom5_W2d', '_blank')">
-                            <div class="play-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg></div>
-                            <p class="absolute bottom-4 left-4 text-sm font-semibold">Concept: Controlled Aggression</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tactic 2: Movement Speed -->
-                <div class="card p-8 md:p-12 mt-16 reveal">
-                    <div class="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
-                        <div class="md:order-2">
-                            <span class="font-bebas text-xl text-[var(--glow-pink)]">CORE TACTIC 02</span>
-                            <h3 class="font-bebas text-5xl mt-1">Movement Speed Ko Stack Karo</h3>
-                            <p class="mt-4 text-gray-300">Aapki speed hi aapki life hai. International players hamesha movement speed ko maximum rakhte hain. Yeh sirf Tatsuya use karne se nahi hota, iske peeche ek poora system hai.</p>
-                            <div class="mt-6 border-l-4 border-[var(--glow-pink)] pl-4">
-                                <h4 class="font-bold text-lg text-white">The Holy Trinity of Speed:</h4>
-                                <ul class="list-disc list-inside mt-2 space-y-1 text-sm text-gray-300">
-                                    <li><span class="font-bold text-white">Joseph On Karwana:</span> Looting ke time pehle hi thoda damage lelo taaki Joseph active ho jaaye.</li>
-                                    <li><span class="font-bold text-white">Maximum Energizers:</span> Pocket market ho ya loot, hamesha extra Energizers uthao. Yeh aapko continuous HP aur speed dono denge.</li>
-                                    <li><span class="font-bold text-white">Tatsuya Dash:</span> Isko hamesha speed stack ke upar use karo for maximum effect.</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="video-placeholder md:order-1" onclick="window.open('https://youtu.be/7C06BkqJQN0?si=4QN677Osiom5_W2d', '_blank')">
-                             <div class="play-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg></div>
-                            <p class="absolute bottom-4 left-4 text-sm font-semibold">Concept: Stacking Buffs</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-             <!-- Advanced Concepts Section -->
-            <section id="advanced" class="mb-20 md:mb-32">
-                <h2 class="font-bebas section-heading text-center reveal">ADVANCED <span class="text-[var(--glow-blue)]">CONCEPTS</span></h2>
-                <p class="text-center max-w-2xl mx-auto mt-4 text-gray-400 reveal stagger-1">Jab aap core tactics master kar lete ho, tab aap in high-level strategies ko use karke game ko poori tarah control kar sakte ho.</p>
-
-                <!-- Concept 1: Tatsuya + Oskar Combo -->
-                <div class="card p-8 md:p-12 mt-16 reveal">
-                    <div class="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
-                        <div class="md:order-2">
-                            <span class="font-bebas text-xl text-[var(--glow-blue)]">ADVANCED CONCEPT 01</span>
-                            <h3 class="font-bebas text-4xl lg:text-5xl mt-1">Tatsuya + Oskar "Simultaneously"</h3>
-                            <p class="mt-4 text-gray-300">Yeh combo mind-blow kar dega. Ise 'simultaneously' yaani ek saath use karne ka matlab hai 'The 0.5 Second Window'—aadhe second mein entry, cover destroy, aur reposition. Enemy ko react karne ka time hi nahi milta.</p>
-                             <div id="combo-tabs" class="mt-6">
-                                <div class="flex flex-wrap gap-2 mb-4">
-                                    <button class="tab-btn active" data-tab="execution">Pro Execution</button>
-                                    <button class="tab-btn" data-tab="variations">Variations</button>
-                                </div>
-                                <div class="tab-content active" id="execution">
-                                    <h4 class="font-bold text-lg text-white">Perfect Sequence (Wasanaa Style):</h4>
-                                    <ol class="list-decimal list-inside mt-2 space-y-1 text-sm text-gray-300">
-                                        <li><span class="font-semibold text-white">Pehla Tatsuya Use Hua:</span> Speed se close-in karne ke liye.</li>
-                                        <li><span class="font-semibold text-white">Close Aake Oskar Use Hua:</span> Jaise hi aap enemy ke wall ke paas aate ho, turant Oskar. Wall toota.</li>
-                                        <li><span class="font-semibold text-white">Immediate Action:</span> Wall toot-te hi aapke paas clear shot hota hai. Damage do ya knock nikalo.</li>
-                                        <li><span class="font-semibold text-white">Dusra Tatsuya (Optional):</span> Fight jeetne ke baad ya damage deke safe hone ke liye back off karo.</li>
-                                    </ol>
-                                </div>
-                                <div class="tab-content" id="variations">
-                                     <h4 class="font-bold text-lg text-white">Strategic Variations:</h4>
-                                     <ul class="list-disc list-inside mt-2 space-y-1 text-sm text-gray-300">
-                                        <li><b>Defensive Breach:</b> Pehle Oskar se wall todo, fir Tatsuya se damage deke waapis apne cover mein aa jao.</li>
-                                        <li><b>Reposition Breach:</b> Pehle Tatsuya se side mein jao, ek naya angle banao, fir Oskar se wall tod ke surprise attack do.</li>
-                                     </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="video-placeholder md:order-1" onclick="window.open('https://youtu.be/7C06BkqJQN0?si=4QN677Osiom5_W2d', '_blank')">
-                             <div class="play-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg></div>
-                            <p class="absolute bottom-4 left-4 text-sm font-semibold">Concept: Instant Breach & Entry</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Concept 2: Bait Rush -->
-                <div class="card p-8 md:p-12 mt-16 reveal">
-                     <div class="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
-                        <div>
-                            <span class="font-bebas text-xl text-[var(--glow-blue)]">ADVANCED CONCEPT 02</span>
-                            <h3 class="font-bebas text-4xl lg:text-5xl mt-1">The Art of Bait Rush</h3>
-                            <p class="mt-4 text-gray-300">Yeh ek high IQ team play hai. Aap opponent ko dikhate ho ki aap charge kar rahe ho, unka attention aur skills apni taraf kheench lete ho, aur tabhi aapka teammate flank karke unhe backstab kar deta hai.</p>
-                             <div class="mt-6 border-l-4 border-[var(--glow-blue)] pl-4">
-                                <h4 class="font-bold text-lg text-white">Success Ke Ingredients:</h4>
-                                <ul class="list-disc list-inside mt-2 space-y-1 text-sm text-gray-300">
-                                    <li><b>Role Clarity:</b> Aapka kaam knock nikalna nahi, <span class="font-bold text-yellow-300">attention-grabbing</span> hai. Zinda rehna hai.</li>
-                                    <li><b>Tool ka Sahi Istemal:</b> Chrono ya Tatsuya use karke bait karo, thoda chip damage do, aur enemy ko busy rakho.</li>
-                                    <li><b>Perfect Timing:</b> Jaise hi 2-3 enemies aap par focus karein, aapke flanker (jaise Kero) ko attack karna hai. Communication is key.</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="video-placeholder" onclick="window.open('https://youtu.be/7C06BkqJQN0?si=4QN677Osiom5_W2d', '_blank')">
-                            <div class="play-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg></div>
-                            <p class="absolute bottom-4 left-4 text-sm font-semibold">Concept: Team-Based Deception</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Mid-Fight Decision Making -->
-            <section id="decision" class="mb-20 md:mb-32">
-                 <h2 class="font-bebas section-heading text-center reveal">MID-FIGHT <span class="text-[var(--glow-pink)]">DECISION MAKING</span></h2>
-                 <p class="text-center max-w-2xl mx-auto mt-4 text-gray-400 reveal stagger-1">Entry lene ke baad kya karna hai, yahi cheez ek average aur ek pro rusher mein farak paida karti hai. Apne agle move ko hamesha plan karo.</p>
-                 <div class="card p-8 md:p-12 mt-12 reveal stagger-2">
-                     <h3 class="font-bebas text-4xl text-center tracking-wider text-white">The Rusher's Decision Tree</h3>
-                     <p class="text-center text-gray-400 mt-2">Situation ke hisaab se apna agla move chuno.</p>
-                     <div class="grid md:grid-cols-2 gap-8 mt-8">
-                         <div class="border-l-4 border-green-500 p-4 rounded">
-                            <h4 class="font-bold text-xl text-green-400">Situation A: Entry Successful (Aapne Knock Nikala)</h4>
-                            <p class="font-semibold mt-4">Agar aapki HP full hai & teammate paas hai:</p>
-                            <p class="text-gray-300">Turant <span class="text-white font-bold">Push The Advantage</span>. 4v3 situation ko 4v2 banao. Team ko call do "EK KNOCK, PUSH PUSH!"</p>
-                            <p class="font-semibold mt-4">Agar aapki HP low hai ya teammate door hai:</p>
-                            <p class="text-gray-300">Turant <span class="text-white font-bold">Create Space & Heal</span>. Gloo wall lagao, peeche hato, heal karo. Knocked enemy ko aapka support finish karega. Aapka zinda rehna zyaada zaroori hai.</p>
-                         </div>
-                          <div class="border-l-4 border-[var(--glow-red)] p-4 rounded">
-                            <h4 class="font-bold text-xl text-red-400">Situation B: Entry Failed (Aapko Heavy Damage Pada)</h4>
-                            <p class="font-semibold mt-4">Agar aapke paas cover & skills hai:</p>
-                            <p class="text-gray-300"><span class="text-white font-bold">Fall Back & Reset</span>. Tatsuya ya Chrono use karke safe position par jao. Apne secondary rusher ko aage aane ka call do: "Main low hoon, tu entry le."</p>
-                             <p class="font-semibold mt-4">Agar aap open mein phas gaye ho:</p>
-                            <p class="text-gray-300"><span class="text-white font-bold">Trade Your Life</span>. Marne se pehle jitna ho sake enemy ko damage do. Call out do: "Yeh banda bohot low hai, one shot!" Taaki aapka teammate trade nikal sake.</p>
-                         </div>
-                     </div>
-                 </div>
-            </section>
-            
-            <!-- Mindset Section -->
-            <section id="mindset" class="mb-20 md:mb-32">
-                <h2 class="font-bebas section-heading text-center reveal">CHAMPION <span class="text-[var(--glow-blue)]">MINDSET</span></h2>
-                <p class="text-center max-w-2xl mx-auto mt-4 text-gray-400 reveal stagger-1">"Bhai main thoda sa sochna lag jaata hoon... mujhe rush karna hai ki nahi karna hai?" Agar aapke dimaag mein yeh aata hai, toh aapko mindset pe kaam karna padega.</p>
-                <div class="grid md:grid-cols-2 gap-8 mt-12">
-                    <div class="card p-8 reveal stagger-1">
-                        <h3 class="font-bebas text-3xl text-white tracking-wider">Fearless, Not Brainless</h3>
-                        <p class="mt-2 text-gray-300">Aap mein woh fearless mindset hona chahiye ki "haan bhai main charge karunga." Aapko capable hona chahiye ki aap 1v2 le sako. Lekin yeh over-confidence nahi hona chahiye. Aapko mentally strong hona hai ki kahan kaise khelna hai. Jaise Vaky Tikkai fearless hoke jaata hai.</p>
-                    </div>
-                    <div class="card p-8 reveal stagger-2">
-                        <h3 class="font-bebas text-3xl text-white tracking-wider">Lead The Coordination</h3>
-                        <p class="mt-2 text-gray-300">Aapko akela team ko nahi sambhalna hai. Har fight mein <span class="font-bold text-yellow-300">ek solo player ko pakadne ka try karna hai</span>. Yeh decision aapka hoga ki "mereko mere secondary rusher ko yahan leke jaana hai." Yeh lead karne wala cheez aapko seekhna hai, jaise Wasanaa ne Get'hai ke saath milke kiya.</p>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Training Drills Section -->
-            <section id="training" class="mb-20 md:mb-32">
-                <h2 class="font-bebas section-heading text-center reveal">TRAINING <span class="text-[var(--glow-pink)]">DRILLS</span></h2>
-                <p class="text-center max-w-2xl mx-auto mt-4 text-gray-400 reveal stagger-1">Yeh sab cheezein aayengi practice se. Pro players jo custom mein karte hain, woh aapko bhi karna hai. Yeh raha aapka training plan.</p>
-                <div class="card p-8 md:p-12 mt-12 text-left max-w-4xl mx-auto reveal stagger-2">
-                    <h3 class="font-bebas text-4xl text-center tracking-wider">Aapka Daily Practice Routine</h3>
-                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mt-8 list-disc list-inside">
-                        <li><b>1v4 / 1v6 Customs:</b> Isse aapka 1v2, 1v3 ka skill aur confidence, dono build hoga. Fearless mindset yahin se aayega.</li>
-                        <li><b>Combo Practice:</b> Training ground mein Tatsuya + Oskar combo ki muscle memory banao. Ise alag-alag situations mein practice karo.</li>
-                        <li><b>Bait Drills:</b> Apne teammates ke saath custom mein bait rush ki practice karo. Aapka goal sirf zinda rehna aur attention kheench ke rakhna hai.</li>
-                        <li><b>Situational Scrims:</b> Open area fights ki practice karo. Focus is baat par rakho ki knock ke baad over-extend nahi karna hai.</li>
-                        <li><b>Lead The Duo:</b> Apne secondary rusher ke saath 2v4 khelo. Ismein aap usko lead karo, solo targets ko identify karo, aur ek saath push karo.</li>
-                         <li><b>VOD Review:</b> Apne gameplay ko record karo. Har woh fight dekho jahan aap mare ho aur pucho, "Yahan main aur kya behtar kar sakta tha?"</li>
-                    </ul>
-                </div>
-            </section>
+    <div class="step">
+      <h2>3. Competitor Intelligence</h2>
+      <div class="form-group">
+        <label for="competitors" class="optional">Competitors (URLs or names, one per line)</label>
+        <textarea id="competitors" name="competitors" placeholder="https://competitor1.com&#10;Competitor Brand 2"></textarea>
         </div>
-    </main>
-
-    <footer class="bg-black py-8">
-        <div class="container mx-auto px-6 text-center text-gray-500">
-            <p class="font-bebas text-xl tracking-widest"><span class="text-[var(--glow-blue)]">RUSHER'S</span><span class="text-gray-200">GUIDE</span></p>
-            <p class="text-sm mt-2">Agar aapko yeh sab kuch achha laga toh bas video ko like kar dena. Channel pe naye ho, subscribe kar lo. Grind karte raho!</p>
+      <div class="form-group">
+        <label for="deep_scrape">Website Scraping Level (Your Site) *</label>
+        <div class="select-wrapper">
+          <select id="deep_scrape" name="deep_scrape" required>
+            <option value="" disabled selected>Select scraping depth...</option>
+            <option value="no">No Scraping</option>
+            <option value="basic">Basic Scrape (Homepage Only)</option>
+            <option value="deep_50">Deep Scrape (Up to 50 Pages)</option>
+            <option value="full_site">Full Site Scrape (Warning: Slow)</option>
+          </select>
         </div>
-    </footer>
+        <span class="error-message">Please select a scraping level.</span>
+      </div>
+      <div class="form-group">
+        <label for="competitor_scrape">Competitor Scraping *</label>
+        <div class="select-wrapper">
+          <select id="competitor_scrape" name="competitor_scrape" required>
+            <option value="" disabled selected>Scrape competitor sites?</option>
+            <option value="yes">Yes – Scrape competitor sites (if provided)</option>
+            <option value="no">No – Do not scrape competitors</option>
+          </select>
+        </div>
+        <span class="error-message">Please select a competitor scraping option.</span>
+      </div>
+      <div class="buttons">
+        <button type="button" class="back-btn" onclick="prevStep()"><span class="button-text">Back</span><div class="loader-spinner"></div></button>
+        <button type="button" onclick="nextStep()"><span class="button-text">Next</span><div class="loader-spinner"></div></button>
+      </div>
+    </div>
 
-    <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-        
-        const header = document.getElementById('header');
-        window.onscroll = () => {
-            if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-                header.classList.add('py-2'); header.classList.remove('py-4');
-            } else {
-                header.classList.add('py-4'); header.classList.remove('py-2');
-            }
-        };
+    <div class="step">
+      <h2>4. The "Everything" Upload Portal</h2>
+      <p class="subtitle" style="text-align:left; margin: -10px 0 20px 0; font-size: 1rem;">
+        Upload absolutely anything. We support all file types.
+      </p>
+      <div class="form-group">
+        <label>Universal Drag & Drop</label>
+        <div class="drop-area" id="dropArea">
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+            <path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <strong>Drag & Drop Files Here</strong>
+          <span style="font-size: 0.9rem;">(or click to browse)</span><br>
+          <small>Supports: ZIP, PDF, DOCX, MP4, MP3, AI, PSD, JPG, etc.</small>
+        </div>
+        <input type="file" id="fileInput" name="files" multiple style="display:none;" />
+        <div class="preview-toolbar" id="previewToolbar">
+            <button type="button" id="clearFilesBtn">Clear All Files</button>
+        </div>
+        <div class="preview" id="filePreview"></div>
+      </div>
+      <div class="form-group">
+        <label for="logos" class="optional">Specific: Logos (Image, SVG, AI, ZIP)</label>
+        <input type="file" id="logos" name="logos" multiple accept="image/*,.zip,.ai,.svg" />
+      </div>
+      <div class="form-group">
+        <label for="brand_docs" class="optional">Specific: Brand Guidelines (PDF, DOCX, ZIP)</label>
+        <input type="file" id="brand_docs" name="brand_docs" multiple accept=".pdf,.docx,.zip" />
+      </div>
+      <div class="form-group">
+        <label for="catalogs" class="optional">Specific: Product Catalogs / Spreadsheets</label>
+        <input type="file" id="catalogs" name="catalogs" multiple accept=".pdf,.xls,.xlsx,.csv,.zip" />
+      </div>
+      <div class="form-group">
+        <label for="media_audio" class="optional">Specific: Audio (Voice Notes, Explainers)</label>
+        <input type="file" id="media_audio" name="media_audio" accept="audio/*" multiple />
+      </div>
+      <div class="buttons">
+        <button type="button" class="back-btn" onclick="prevStep()"><span class="button-text">Back</span><div class="loader-spinner"></div></button>
+        <button type="button" onclick="nextStep()"><span class="button-text">Next</span><div class="loader-spinner"></div></button>
+      </div>
+    </div>
 
-        const tabContainers = document.querySelectorAll('#combo-tabs');
-        tabContainers.forEach(container => {
-            const tabButtons = container.querySelectorAll('.tab-btn');
-            const tabContents = container.querySelectorAll('.tab-content');
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    const tabId = button.getAttribute('data-tab');
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                        if (content.id === tabId) {
-                            content.classList.add('active');
-                        }
-                    });
-                });
-            });
-        });
-    </script>
+    <div class="step">
+      <h2>5. Final Details & Submission</h2>
+      <div class="form-group">
+        <label for="fallback_info" class="optional">Worst-Case / Missing Info Handler</label>
+        <p class="subtitle" style="text-align:left; margin: -5px 0 10px 0; font-size: 0.9rem;">
+          If you have almost no info, just a name, or a complex idea, write it here.
+        </p>
+        <textarea id="fallback_info" name="fallback_info" rows="6" placeholder="e.g., 'My business is 'Eclipse X'. I have no website, no logo. I just want to sell premium tech accessories. Please help me build the brand from scratch.' ... or ... 'See the attached voice memo for a full explanation.'"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="email">Your Email *</label>
+        <input type="email" id="email" name="email" required placeholder="your.email@example.com" />
+        <span class="error-message">A valid email is required for contact.</span>
+      </div>
+      <input type="hidden" name="session_id" id="sessionID" />
+      <input type="hidden" name="timestamp" id="timestampField" />
+      <input type="hidden" name="user_agent" id="userAgentField" />
+      <div class="buttons">
+        <button type="button" class="back-btn" onclick="prevStep()"><span class="button-text">Back</span><div class="loader-spinner"></div></button>
+        <button type="submit" id="submitButton"><span class="button-text">Submit All Intelligence</span><div class="loader-spinner"></div></button>
+      </div>
+    </div>
+
+    <p id="responseMessage"></p>
+
+  </form>
+</div>
+
+<script>
+// --- CORE STATE & ELEMENTS ---
+let currentStep = 0;
+const steps = document.querySelectorAll(".step");
+const stepIndicators = document.querySelectorAll(".step-indicator");
+const form = document.getElementById("intakeForm");
+const responseMessage = document.getElementById("responseMessage");
+const submitButton = document.getElementById("submitButton");
+
+// --- STEP NAVIGATION ---
+function updateStepIndicator() {
+  stepIndicators.forEach((indicator, index) => {
+    indicator.classList.remove("active", "completed");
+    const indicatorSpan = indicator.querySelector("span");
+    if (index < currentStep) {
+      indicator.classList.add("completed");
+      indicatorSpan.innerHTML = "&#10003;"; // Checkmark
+    } else if (index === currentStep) {
+      indicator.classList.add("active");
+      indicatorSpan.textContent = index + 1;
+    } else {
+      indicatorSpan.textContent = index + 1;
+    }
+  });
+}
+
+function showStep(stepIndex) {
+  steps.forEach((step, i) => step.classList.toggle("active", i === stepIndex));
+  currentStep = stepIndex;
+  updateStepIndicator();
+}
+
+// --- 💡 [NEW] SMARTER, CENTRALIZED VALIDATION FUNCTION ---
+/**
+ * Validates a single form field and updates its UI.
+ * @param {HTMLElement} field - The input, textarea, or select element to validate.
+ * @returns {boolean} - True if the field is valid, false otherwise.
+ */
+function validateField(field) {
+  let isFieldValid = true;
+  const value = field.value; // Get raw value (trimming is just for presence check)
+  const trimmedValue = value.trim();
+  const type = field.type;
+  const id = field.id;
+  const isRequired = field.hasAttribute("required");
+
+  const formGroup = field.closest('.form-group');
+  const errorSpan = formGroup ? formGroup.querySelector('.error-message') : null;
+
+  // 1. --- Check for Required Fields ---
+  if (isRequired && trimmedValue === "") {
+    isFieldValid = false;
+  }
+  
+  // 2. --- Check for Format (if a value is present) ---
+  if (trimmedValue !== "") {
+    if (type === "email") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(trimmedValue)) {
+        isFieldValid = false;
+      }
+    } 
+    else if (type === "url") {
+      // "Smart" URL validation: Accepts "google.com"
+      try {
+        new URL(trimmedValue); // Try as-is
+      } catch (_) {
+        try {
+          new URL("https://" + trimmedValue); // Try with https://
+        } catch (_) {
+          isFieldValid = false; // Both failed
+        }
+      }
+    }
+    else if (id === "website_extra" || id === "socials") {
+      // Multi-line URL validation for textareas
+      const lines = value.split('\n');
+      for (const line of lines) {
+        const trimmedLine = line.trim();
+        if (trimmedLine === "") continue; // Ignore empty lines
+
+        try {
+          new URL(trimmedLine);
+        } catch (_) {
+          try {
+            new URL("https://" + trimmedLine);
+          } catch (_) {
+            isFieldValid = false; // Any single invalid line fails the whole field
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  // 3. --- Apply Error Styling ---
+  if (!isFieldValid) {
+    field.classList.add("invalid");
+    if (errorSpan) errorSpan.style.display = "block";
+  } else {
+    field.classList.remove("invalid");
+    if (errorSpan) errorSpan.style.display = "none";
+  }
+  
+  return isFieldValid;
+}
+
+/**
+ * Validates all fields in the current step.
+ * @returns {boolean} - True if ALL fields in the step are valid.
+ */
+function validateStep(stepIndex) {
+  let isStepValid = true;
+  const currentStepElement = steps[stepIndex];
+  const fields = currentStepElement.querySelectorAll("input, textarea, select");
+  
+  fields.forEach(field => {
+    // We run validateField on every field, which updates its UI.
+    // If any one of them returns false, the whole step is marked invalid.
+    if (!validateField(field)) {
+      isStepValid = false;
+    }
+  });
+  
+  return isStepValid;
+}
+
+function nextStep() {
+  if (validateStep(currentStep)) {
+    if (currentStep < steps.length - 1) {
+      showStep(currentStep + 1);
+    }
+  }
+}
+
+function prevStep() {
+  if (currentStep > 0) {
+    showStep(currentStep - 1);
+  }
+}
+
+// --- 💡 [NEW] ADD REAL-TIME VALIDATION LISTENERS ---
+document.querySelectorAll("input, textarea, select").forEach(field => {
+  // Validate as user types
+  field.addEventListener("input", () => validateField(field));
+  // Validate when user clicks away
+  field.addEventListener("change", () => validateField(field));
+});
+
+// Initialize first step on load
+showStep(0);
+
+
+// --- ADVANCED FILE UPLOADER (No changes needed) ---
+const dropArea = document.getElementById("dropArea");
+const fileInput = document.getElementById("fileInput");
+const filePreview = document.getElementById("filePreview");
+const previewToolbar = document.getElementById("previewToolbar");
+const clearFilesBtn = document.getElementById("clearFilesBtn");
+dropArea.onclick = () => fileInput.click();
+['dragenter', 'dragover'].forEach(eventName => {
+  dropArea.addEventListener(eventName, (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropArea.classList.add("dragover");
+  }, false);
+});
+['dragleave', 'drop'].forEach(eventName => {
+  dropArea.addEventListener(eventName, (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropArea.classList.remove("dragover");
+  }, false);
+});
+dropArea.addEventListener("drop", (e) => {
+  const dt = e.dataTransfer;
+  const files = dt.files;
+  fileInput.files = files;
+  previewFiles(files);
+});
+fileInput.addEventListener("change", () => {
+  previewFiles(fileInput.files);
+});
+clearFilesBtn.addEventListener("click", () => {
+    fileInput.value = null;
+    filePreview.innerHTML = "";
+    previewToolbar.style.display = "none";
+});
+function getFileIcon(fileType) {
+  if (fileType.includes("zip") || fileType.includes("archive")) return "📦";
+  if (fileType.includes("pdf")) return "📕";
+  if (fileType.includes("document") || fileType.includes("word")) return "📝";
+  if (fileType.includes("spreadsheet") || fileType.includes("excel")) return "📊";
+  if (fileType.includes("presentation") || fileType.includes("powerpoint")) return "💻";
+  if (fileType.includes("photoshop")) return "🖌";
+  if (fileType.includes("illustrator")) return "✒";
+  return "📄"; // Generic Page
+}
+function previewFiles(files) {
+  filePreview.innerHTML = "";
+  if (!files || files.length === 0) {
+    previewToolbar.style.display = "none";
+    return;
+  }
+  previewToolbar.style.display = "flex";
+  [...files].forEach(file => {
+    const reader = new FileReader();
+    const fileItem = document.createElement("div");
+    fileItem.className = "file-item";
+    const fileName = document.createElement("div");
+    fileName.className = "file-name";
+    fileName.textContent = file.name;
+    fileName.title = file.name;
+    if (file.type.startsWith("image/")) {
+      reader.onload = (e) => {
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        fileItem.prepend(img);
+      };
+      reader.readAsDataURL(file);
+    } else if (file.type.startsWith("video/")) {
+      const video = document.createElement("video");
+      video.src = URL.createObjectURL(file);
+      video.controls = false;
+      video.muted = true;
+      fileItem.prepend(video);
+    } else if (file.type.startsWith("audio/")) {
+      const audio = document.createElement("audio");
+audio.src = URL.createObjectURL(file);
+audio.controls = true;
+fileItem.prepend(audio);
+    } else {
+      const fileIcon = document.createElement("div");
+      fileIcon.className = "file-icon";
+      fileIcon.textContent = getFileIcon(file.type);
+      fileItem.prepend(fileIcon);
+    }
+    fileItem.appendChild(fileName);
+    filePreview.appendChild(fileItem);
+  });
+}
+
+// --- METADATA & FORM SUBMISSION ---
+function populateMetadata() {
+  document.getElementById("sessionID").value = "SID-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+  document.getElementById("timestampField").value = new Date().toISOString();
+  document.getElementById("userAgentField").value = navigator.userAgent;
+}
+
+form.addEventListener("submit", async function(e) {
+  e.preventDefault();
+  
+  // Validate the final step before submitting
+  if (!validateStep(currentStep)) {
+    return; // Don't submit if final step is invalid
+  }
+
+  // --- 🚨🚨🚨 THIS IS THE CRITICAL ERROR 🚨🚨🚨 ---
+  // ---     YOU MUST REPLACE "WEBHOOK_URL_HERE"     ---
+  const N8N_WEBHOOK_URL = "WEBHOOK_URL_HERE"; 
+  // ----------------------------------------------------
+  
+  if (N8N_WEBHOOK_URL === "WEBHOOK_URL_HERE") {
+    responseMessage.className = "error";
+    responseMessage.textContent = "DEVELOPER: Please set the N8N_WEBHOOK_URL in the <script> tag.";
+    return;
+  }
+
+  populateMetadata();
+  submitButton.classList.add("loading");
+  submitButton.disabled = true;
+  responseMessage.className = "";
+  responseMessage.style.display = "none";
+  responseMessage.textContent = "";
+
+  const formData = new FormData(form);
+
+  try {
+    const response = await fetch(N8N_WEBHOOK_URL, {
+      method: "POST",
+      body: formData,
+    });
+    if (response.ok) {
+      responseMessage.className = "success";
+      responseMessage.textContent = "✅ Intelligence package submitted successfully! We will be in touch.";
+      form.reset();
+      filePreview.innerHTML = "";
+      previewToolbar.style.display = "none";
+      showStep(0);
+    } else {
+      const errorText = await response.text();
+      responseMessage.className = "error";
+      responseMessage.textContent = Error: Submission failed (Status: ${response.status}). Please try again.;
+      console.error("Submission error:", response.status, errorText);
+    }
+  } catch (err) {
+    responseMessage.className = "error";
+    responseMessage.textContent = "Error: Connection failed. Please check your network and try again.";
+    console.error("Network or fetch error:", err);
+  } finally {
+    submitButton.classList.remove("loading");
+    submitButton.disabled = false;
+  }
+});
+</script>
 </body>
 </html>
