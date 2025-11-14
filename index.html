@@ -1,851 +1,674 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Universal Intelligence Intake Portal [v5.0 Stable]</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<style>
-:root {
-  --bg-darkest: #050505;
-  --bg-dark: #0F1115;
-  --bg-mid: #181B21;
-  --border-color: #2A2E35;
-  --text-light: #F0F2F5;
-  --text-mid: #889096;
-  --primary-blue: #00AFFF;
-  --primary-hover: #33CFFF;
-  --primary-glow: rgba(0, 175, 255, 0.15);
-  --success: #00E676;
-  --error: #FF3D57;
-  --input-bg: #13161B;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { font-size: 16px; scroll-behavior: smooth; }
-
-body {
-  background: var(--bg-darkest);
-  font-family: "Montserrat", sans-serif;
-  color: var(--text-light);
-  line-height: 1.6;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* --- Layout --- */
-.container {
-  width: 100%;
-  max-width: 850px;
-  margin: 40px auto;
-  padding: clamp(20px, 5vw, 40px);
-  background: var(--bg-dark);
-  border-radius: 20px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
-  position: relative;
-  overflow: hidden;
-}
-
-/* Top Glow Effect */
-.container::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
-  opacity: 0.7;
-}
-
-h1 {
-  color: var(--text-light);
-  margin-bottom: 10px;
-  text-align: center;
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
-
-h1 span { color: var(--primary-blue); }
-
-h2 {
-  color: var(--text-light);
-  margin-bottom: 25px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid var(--border-color);
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.subtitle {
-  color: var(--text-mid);
-  margin-bottom: 40px;
-  text-align: center;
-  font-size: 1rem;
-}
-
-/* --- Stepper --- */
-.step-indicator-container {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto 50px;
-  position: relative;
-}
-
-/* The connecting line */
-.step-indicator-container::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  right: 10px;
-  height: 2px;
-  background: var(--border-color);
-  transform: translateY(-50%);
-  z-index: 1;
-}
-
-/* The progress line (fills up as you go) */
-.progress-line {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  height: 2px;
-  background: var(--primary-blue);
-  transform: translateY(-50%);
-  z-index: 1;
-  width: 0%; /* JS updates this */
-  transition: width 0.4s ease;
-}
-
-.step-indicator {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background: var(--bg-dark);
-  border: 2px solid var(--border-color);
-  z-index: 2;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-mid);
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: default;
-}
-
-.step-indicator.active {
-  border-color: var(--primary-blue);
-  color: var(--bg-darkest);
-  background: var(--primary-blue);
-  transform: scale(1.1);
-  box-shadow: 0 0 25px var(--primary-glow);
-}
-
-.step-indicator.completed {
-  border-color: var(--primary-blue);
-  color: var(--primary-blue);
-  background: var(--bg-dark);
-  cursor: pointer; /* Allow clicking back */
-}
-
-.step-indicator.completed:hover {
-  background: rgba(0, 175, 255, 0.1);
-}
-
-/* --- Forms --- */
-.step { display: none; animation: fadeSlideIn 0.4s ease forwards; }
-.step.active { display: block; }
-
-@keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.form-group { margin-bottom: 24px; position: relative; }
-
-label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  font-size: 0.95rem;
-  color: var(--text-light);
-}
-
-label.optional::after {
-  content: "(Optional)";
-  font-weight: 400;
-  color: var(--text-mid);
-  margin-left: 8px;
-  font-size: 0.8rem;
-  opacity: 0.7;
-}
-
-input[type="text"], input[type="url"], input[type="email"], textarea, select {
-  width: 100%;
-  padding: 14px 16px;
-  background: var(--input-bg);
-  border: 1px solid var(--border-color);
-  color: var(--text-light);
-  border-radius: 10px;
-  font-size: 1rem;
-  font-family: "Montserrat", sans-serif;
-  transition: all 0.2s ease;
-}
-
-/* Hover & Focus states */
-input:hover, textarea:hover, select:hover { border-color: #444; }
-
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--primary-blue);
-  background: var(--bg-mid);
-  box-shadow: 0 0 0 3px rgba(0, 175, 255, 0.1);
-}
-
-/* Validation States */
-input.valid, textarea.valid, select.valid { border-color: rgba(0, 230, 118, 0.3); }
-input.invalid, textarea.invalid, select.invalid { border-color: var(--error); }
-
-textarea { resize: vertical; min-height: 120px; line-height: 1.5; }
-
-/* Custom Select Arrow */
-.select-wrapper { position: relative; }
-select { appearance: none; cursor: pointer; }
-.select-wrapper::after {
-  content: '▼';
-  position: absolute;
-  top: 50%;
-  right: 16px;
-  transform: translateY(-50%);
-  color: var(--primary-blue);
-  font-size: 0.7rem;
-  pointer-events: none;
-}
-
-.error-message {
-  color: var(--error);
-  font-size: 0.85rem;
-  margin-top: 6px;
-  display: none;
-  font-weight: 500;
-}
-
-/* --- Buttons --- */
-.buttons { margin-top: 40px; display: flex; gap: 15px; }
-
-button {
-  flex: 1;
-  padding: 16px;
-  background: var(--primary-blue);
-  border: none;
-  color: var(--bg-darkest);
-  font-weight: 700;
-  border-radius: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-button:hover {
-  background: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 175, 255, 0.2);
-}
-
-button:disabled {
-  background: #2A2A2A;
-  color: #555;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.back-btn {
-  background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-mid);
-}
-
-.back-btn:hover {
-  background: rgba(255,255,255,0.05);
-  border-color: var(--text-light);
-  color: var(--text-light);
-  transform: translateY(-2px);
-  box-shadow: none;
-}
-
-/* Spinner */
-.loader-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(0,0,0,0.1);
-  border-top-color: #000;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  display: none;
-  margin-left: 10px;
-}
-.back-btn .loader-spinner { border-top-color: #fff; }
-button.loading .loader-spinner { display: block; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* --- File Upload Area --- */
-.drop-area {
-  padding: 40px;
-  border: 2px dashed var(--border-color);
-  border-radius: 12px;
-  text-align: center;
-  color: var(--text-mid);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: rgba(255,255,255,0.01);
-}
-
-.drop-area:hover, .drop-area.dragover {
-  border-color: var(--primary-blue);
-  background: rgba(0, 175, 255, 0.05);
-  color: var(--text-light);
-}
-
-.drop-area svg { width: 48px; height: 48px; margin-bottom: 15px; color: var(--primary-blue); }
-
-.preview-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 12px;
-  margin-top: 20px;
-}
-
-.file-card {
-  background: var(--bg-mid);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  overflow: hidden;
-  font-size: 0.8rem;
-}
-
-.file-card-media {
-  height: 80px;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-mid);
-  font-size: 2rem;
-}
-.file-card-media img { width: 100%; height: 100%; object-fit: cover; }
-.file-card-name {
-  padding: 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--text-light);
-}
-#clearFilesBtn {
-  margin-top: 10px;
-  background: transparent;
-  color: var(--error);
-  border: 1px solid var(--error);
-  padding: 8px;
-  font-size: 0.8rem;
-  display: none;
-}
-
-/* --- Response Messages --- */
-#responseMessage {
-  text-align: center;
-  font-weight: 600;
-  margin-top: 20px;
-  padding: 20px;
-  border-radius: 12px;
-  display: none;
-}
-#responseMessage.success { background: rgba(0, 230, 118, 0.1); color: var(--success); border: 1px solid var(--success); }
-#responseMessage.error { background: rgba(255, 61, 87, 0.1); color: var(--error); border: 1px solid var(--error); }
-
-/* --- Mobile Tweaks --- */
-@media (max-width: 600px) {
-  .container { margin: 0; border: none; border-radius: 0; min-height: 100vh; }
-  h1 { font-size: 1.8rem; }
-  .buttons { gap: 10px; }
-  .step-indicator { width: 30px; height: 30px; font-size: 0.8rem; }
-}
-</style>
-</head>
-<body>
-
-<div class="container">
-  <h1>Universal <span>Intake</span></h1>
-  <p class="subtitle">Advanced data ingestion portal. Please complete all required fields.</p>
-
-  <div class="step-indicator-container">
-    <div class="progress-line" id="progressLine"></div>
-    <!-- data-step is 0-indexed in logic, 1-based for display -->
-    <div class="step-indicator active" onclick="goToStep(0)">1</div>
-    <div class="step-indicator" onclick="goToStep(1)">2</div>
-    <div class="step-indicator" onclick="goToStep(2)">3</div>
-    <div class="step-indicator" onclick="goToStep(3)">4</div>
-    <div class="step-indicator" onclick="goToStep(4)">5</div>
-  </div>
-
-  <form id="intakeForm" novalidate>
-
-    <!-- STEP 1 -->
-    <div class="step active" id="step0">
-      <h2>Basic Intelligence</h2>
-      <div class="form-group">
-        <label for="business_name">Business Entity Name *</label>
-        <input type="text" id="business_name" name="business_name" required placeholder="e.g., Acme Corp" />
-        <span class="error-message">Business name is required.</span>
-      </div>
-      <div class="form-group">
-        <label for="website_main" class="optional">Primary Domain</label>
-        <input type="text" id="website_main" name="website_main" placeholder="example.com" />
-        <span class="error-message">Invalid URL format.</span>
-      </div>
-      <div class="form-group">
-        <label for="website_extra" class="optional">Additional Domains (One per line)</label>
-        <textarea id="website_extra" name="website_extra" placeholder="store.example.com&#10;blog.example.com"></textarea>
-      </div>
-      <div class="buttons">
-        <button type="button" onclick="nextStep()">Next &rarr;</button>
-      </div>
-    </div>
-
-    <!-- STEP 2 -->
-    <div class="step" id="step1">
-      <h2>Strategy Definition</h2>
-      <div class="form-group">
-        <label for="goal">Core Objective *</label>
-        <div class="select-wrapper">
-          <select id="goal" name="goal" required>
-            <option value="" disabled selected>Select primary objective...</option>
-            <option value="lead_gen">Lead Generation / Sales</option>
-            <option value="branding">Brand Positioning</option>
-            <option value="audit">Comprehensive Audit</option>
-            <option value="expansion">Market Expansion</option>
-            <option value="other">Other (Specify below)</option>
-          </select>
-        </div>
-        <span class="error-message">Selection required.</span>
-      </div>
-      <div class="form-group">
-        <label for="description" class="optional">Business Description</label>
-        <textarea id="description" name="description" placeholder="What specific problems do you solve?"></textarea>
-      </div>
-      <div class="buttons">
-        <button type="button" class="back-btn" onclick="prevStep()">Back</button>
-        <button type="button" onclick="nextStep()">Next &rarr;</button>
-      </div>
-    </div>
-
-    <!-- STEP 3 -->
-    <div class="step" id="step2">
-      <h2>Competitor Intel</h2>
-      <div class="form-group">
-        <label for="competitors" class="optional">Known Competitors (URLs or Names)</label>
-        <textarea id="competitors" name="competitors" placeholder="competitor1.com&#10;Competitor 2 Inc."></textarea>
-      </div>
-      <div class="form-group">
-        <label for="scrape_depth">Data Scraping Level *</label>
-        <div class="select-wrapper">
-          <select id="scrape_depth" name="scrape_depth" required>
-            <option value="" disabled selected>Select depth...</option>
-            <option value="none">Do not scrape my site</option>
-            <option value="basic">Basic (Homepage only)</option>
-            <option value="deep">Deep (Up to 50 pages)</option>
-          </select>
-        </div>
-        <span class="error-message">Required.</span>
-      </div>
-      <div class="buttons">
-        <button type="button" class="back-btn" onclick="prevStep()">Back</button>
-        <button type="button" onclick="nextStep()">Next &rarr;</button>
-      </div>
-    </div>
-
-    <!-- STEP 4 -->
-    <div class="step" id="step3">
-      <h2>Asset Upload</h2>
-      <div class="form-group">
-        <div class="drop-area" id="dropArea">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-          <p><strong>Click or Drag Files Here</strong><br><small>Images, PDFs, Documents, Archives</small></p>
-        </div>
-        <input type="file" id="fileInput" name="files" multiple style="display:none;" />
-        
-        <div class="preview-grid" id="filePreview"></div>
-        <button type="button" id="clearFilesBtn">Clear All Files</button>
-      </div>
-      <div class="buttons">
-        <button type="button" class="back-btn" onclick="prevStep()">Back</button>
-        <button type="button" onclick="nextStep()">Next &rarr;</button>
-      </div>
-    </div>
-
-    <!-- STEP 5 -->
-    <div class="step" id="step4">
-      <h2>Submission Protocol</h2>
-      <div class="form-group">
-        <label for="email">Contact Email *</label>
-        <input type="email" id="email" name="email" required placeholder="name@company.com" />
-        <span class="error-message">Valid email required.</span>
-      </div>
-      <div class="form-group">
-        <label for="notes" class="optional">Final Notes / Context</label>
-        <textarea id="notes" name="notes" placeholder="Any fallback instructions if data is missing?"></textarea>
-      </div>
-      
-      <input type="hidden" name="timestamp" id="tsField">
-      
-      <div class="buttons">
-        <button type="button" class="back-btn" onclick="prevStep()">Back</button>
-        <button type="submit" id="submitBtn">
-          <span class="btn-text">Submit Intelligence</span>
-          <div class="loader-spinner"></div>
-        </button>
-      </div>
-    </div>
-  </form>
-
-  <div id="responseMessage"></div>
-
-</div>
-
-<script>
-/* --- CONFIGURATION --- */
-// Set this to true to test the success animation without a real backend
-const SIMULATION_MODE = false; 
-// Replace with your N8N or Zapier Webhook URL
-const WEBHOOK_URL = "https://johnsmith134.app.n8n.cloud/webhook/intake"; 
-
-/* --- STATE MANAGEMENT --- */
-let currentStep = 0;
-const totalSteps = 5;
-const steps = document.querySelectorAll(".step");
-const indicators = document.querySelectorAll(".step-indicator");
-const progressLine = document.getElementById("progressLine");
-const form = document.getElementById("intakeForm");
-
-/* --- NAVIGATION LOGIC --- */
-function updateUI() {
-  // Update Step Visibility
-  steps.forEach((step, idx) => {
-    step.classList.toggle("active", idx === currentStep);
-  });
-
-  // Update Indicators
-  indicators.forEach((ind, idx) => {
-    ind.classList.remove("active", "completed");
-    if (idx === currentStep) {
-      ind.classList.add("active");
-    } else if (idx < currentStep) {
-      ind.classList.add("completed");
-    }
-  });
-
-  // Update Progress Bar Line
-  const percent = (currentStep / (totalSteps - 1)) * 100;
-  progressLine.style.width = percent + "%";
-}
-
-function validateStep(stepIndex) {
-  const currentStepEl = steps[stepIndex];
-  const inputs = currentStepEl.querySelectorAll("input, select, textarea");
-  let isValid = true;
-  let firstError = null;
-
-  inputs.forEach(input => {
-    if (!validateField(input)) {
-      isValid = false;
-      if (!firstError) firstError = input;
-    }
-  });
-
-  if (firstError) {
-    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    firstError.focus();
-  }
-
-  return isValid;
-}
-
-function validateField(input) {
-  // Skip validation for optional fields IF they are empty
-  // But if they have content (like a partial URL), we still validate format
-  const isRequired = input.hasAttribute("required");
-  const val = input.value.trim();
-  const parent = input.closest(".form-group");
-  const errorMsg = parent ? parent.querySelector(".error-message") : null;
-  
-  let fieldValid = true;
-
-  // 1. Required Check
-  if (isRequired && val === "") {
-    fieldValid = false;
-  } 
-  
-  // 2. Email Check
-  if (fieldValid && val !== "" && input.type === "email") {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(val)) fieldValid = false;
-  }
-
-  // 3. URL Check (Smart)
-  if (fieldValid && val !== "" && (input.id.includes("website") || input.id.includes("competitors"))) {
-    // If textarea, split by lines
-    const lines = input.tagName === "TEXTAREA" ? val.split('\n') : [val];
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epoch Scheduler</title>
     
-    for (let line of lines) {
-      line = line.trim();
-      if (line === "") continue;
-      
-      // Auto-fix missing protocol for validation logic
-      let urlToTest = line;
-      if (!/^https?:\/\//i.test(line)) {
-        urlToTest = "https://" + line;
-      }
-      
-      try {
-        new URL(urlToTest);
-      } catch (e) {
-        fieldValid = false;
-        break;
-      }
-    }
-  }
+    <!-- Using Tailwind for a premium, stable, and responsive UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Font (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Transition for background color */
+            @apply transition-colors duration-300;
+        }
 
-  // Visual Feedback
-  if (fieldValid) {
-    input.classList.remove("invalid");
-    input.classList.add("valid");
-    if (errorMsg) errorMsg.style.display = "none";
-  } else {
-    input.classList.add("invalid");
-    input.classList.remove("valid");
-    if (errorMsg) errorMsg.style.display = "block";
-  }
+        /* Light mode (default) */
+        :root {
+            --bg: #f4f4f5; /* zinc-100 */
+            --card-bg: #ffffff;
+            --text-primary: #18181b; /* zinc-900 */
+            --text-secondary: #52525b; /* zinc-600 */
+            --border: #e4e4e7; /* zinc-200 */
+            --primary: #2563eb; /* blue-600 */
+            --primary-text: #ffffff;
+        }
 
-  return fieldValid;
-}
+        /* Dark mode */
+        html.dark {
+            --bg: #09090b; /* zinc-950 */
+            --card-bg: #18181b; /* zinc-900 */
+            --text-primary: #f4f4f5; /* zinc-100 */
+            --text-secondary: #a1a1aa; /* zinc-400 */
+            --border: #27272a; /* zinc-800 */
+            --primary: #3b82f6; /* blue-500 */
+            --primary-text: #ffffff;
+        }
 
-function nextStep() {
-  if (validateStep(currentStep)) {
-    currentStep++;
-    updateUI();
-    window.scrollTo(0, 0);
-  }
-}
+        /* Applying theme colors */
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+        }
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+        }
+        .text-main { color: var(--text-primary); }
+        .text-sub { color: var(--text-secondary); }
+        .border-main { border-color: var(--border); }
+        .button-primary {
+            background-color: var(--primary);
+            color: var(--primary-text);
+        }
+        .button-secondary {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        /* Styling for inputs to match theme */
+        input[type="time"], input[type="text"] {
+            background-color: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        /* Ensure placeholders are visible in dark mode */
+        ::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+        
+        /* Modal styles for the premium feel */
+        .modal-backdrop {
+            @apply fixed inset-0 z-40 bg-black/50 backdrop-blur-sm;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-content {
+            @apply fixed z-50 w-full max-w-md p-6 rounded-t-2xl sm:rounded-2xl;
+            /* Mobile-first: bottom sheet */
+            bottom: 0; left: 0; right: 0;
+            /* Desktop: centered */
+            sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2;
+            background-color: var(--card-bg);
+            animation: slideUp 0.3s ease-out;
+        }
+        @media (min-width: 640px) {
+            .modal-content {
+                animation: scaleIn 0.3s ease-out;
+            }
+        }
 
-function prevStep() {
-  if (currentStep > 0) {
-    currentStep--;
-    updateUI();
-  }
-}
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes scaleIn { 
+            from { opacity: 0; transform: translate(-50%, -45%) scale(0.95); } 
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); } 
+        }
+        @keyframes slideInItem {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .schedule-item-animation {
+            animation: slideInItem 0.3s ease-out forwards;
+        }
+        
+        /* Custom focus rings for better accessibility */
+        input:focus {
+             outline: 2px solid var(--primary);
+             outline-offset: 2px;
+             border-color: var(--primary);
+        }
+        .button-primary:focus-visible, .button-secondary:focus-visible, button:focus-visible {
+             outline: 2px solid var(--primary);
+             outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="antialiased">
 
-function goToStep(stepIndex) {
-  // Only allow clicking back to previously completed steps
-  if (stepIndex < currentStep) {
-    currentStep = stepIndex;
-    updateUI();
-  }
-}
+    <!-- Header -->
+    <header class="sticky top-0 z-10 p-4" style="background-color: var(--bg); opacity: 0.95;">
+        <div class="max-w-3xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-main">Epoch</h1>
+            <button id="theme-toggle" class="p-2 rounded-full text-sub hover:text-main">
+                <!-- Icon Injected by JS -->
+            </button>
+        </div>
+    </header>
 
-/* --- REAL-TIME VALIDATION LISTENER --- */
-document.querySelectorAll("input, textarea, select").forEach(el => {
-  el.addEventListener("blur", () => validateField(el));
-  el.addEventListener("input", () => {
-    // Remove error immediately when typing starts
-    el.classList.remove("invalid");
-    const parent = el.closest(".form-group");
-    if(parent && parent.querySelector(".error-message")) {
-      parent.querySelector(".error-message").style.display = "none";
-    }
-  });
-});
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto p-4">
+        <!-- Today's Date -->
+        <div class="mb-6">
+            <h2 id="today-date" class="text-xl font-semibold text-main"></h2>
+            <p class="text-sub">Your schedule for today.</p>
+        </div>
 
-/* --- FILE UPLOAD LOGIC --- */
-const dropArea = document.getElementById("dropArea");
-const fileInput = document.getElementById("fileInput");
-const filePreview = document.getElementById("filePreview");
-const clearBtn = document.getElementById("clearFilesBtn");
+        <!-- Schedule List -->
+        <ul id="schedule-list" class="space-y-3">
+            <!-- Empty state is a template, cloned by JS -->
+        </ul>
+        
+        <!-- Empty State Template (hidden by default) -->
+        <template id="empty-state-template">
+            <li id="empty-state" class="text-center py-10 card rounded-lg">
+                <p class="text-sub">Your day is empty.</p>
+                <button id="start-planning-empty" class="mt-4 px-4 py-2 rounded-lg button-primary text-sm font-medium">
+                    Start Planning
+                </button>
+            </li>
+        </template>
+            
+    </main>
+    
+    <!-- Floating Action Button -->
+    <button id="fab-add" class="fixed z-30 bottom-6 right-6 w-14 h-14 rounded-full button-primary shadow-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95">
+        <!-- Plus Icon Injected by JS -->
+    </button>
 
-dropArea.addEventListener("click", () => fileInput.click());
+    <!-- Modal Container -->
+    <div id="modal-container" class="hidden">
+        
+        <!-- Onboarding Modal -->
+        <div id="onboarding-modal" class="hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <h2 class="text-xl font-bold text-main mb-2">Welcome!</h2>
+                <p class="text-sub mb-6">Let's design your day. What time do you wake up?</p>
+                <form id="onboarding-form">
+                    <label for="wake-up" class="text-sm font-medium text-sub">Wake Up Time</label>
+                    <input type="time" id="wake-up" value="07:00" class="w-full p-3 mt-1 rounded-lg text-lg">
+                    <button type="submit" class="w-full p-3 mt-6 rounded-lg button-primary font-semibold">
+                        Start Planning
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Task Modal -->
+        <div id="task-modal" class="hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <h2 id="task-modal-title" class="text-xl font-bold text-main mb-6">What's next?</h2>
+                <form id="task-form" class="space-y-4">
+                    <input type="hidden" id="task-id"> <!-- For editing -->
+                    
+                    <div>
+                        <label for="task-name" class="text-sm font-medium text-sub">What are you doing?</label>
+                        <input type="text" id="task-name" placeholder="e.g., Deep Work Session" class="w-full p-3 mt-1 rounded-lg" required>
+                    </div>
 
-["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
-  dropArea.addEventListener(eventName, preventDefaults, false);
-});
+                    <!-- "AI" Suggestions -->
+                    <div id="suggestions-container" class="pt-1">
+                        <label class="text-sm font-medium text-sub">Suggestions</label>
+                        <div id="suggestions-chips" class="flex flex-wrap gap-2 mt-2">
+                            <!-- Chips injected here -->
+                        </div>
+                    </div>
 
-function preventDefaults(e) {
-  e.preventDefault();
-  e.stopPropagation();
-}
+                    <!-- Time Inputs -->
+                    <div class="flex gap-4 w-full">
+                        <div class="w-1/2">
+                            <label for="start-time" class="text-sm font-medium text-sub">From</label>
+                            <input type="time" id="start-time" class="w-full p-3 mt-1 rounded-lg" required>
+                        </div>
+                        <div class="w-1/2">
+                            <label for="end-time" class="text-sm font-medium text-sub">To</label>
+                            <input type="time" id="end-time" class="w-full p-3 mt-1 rounded-lg" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex gap-4 pt-4">
+                        <button type="button" id="delete-task-btn" class="w-1/3 py-3 rounded-lg button-secondary font-semibold hidden">
+                            Delete
+                        </button>
+                        <button type="submit" id="save-task-btn" class="flex-grow py-3 rounded-lg button-primary font-semibold">
+                            Save Task
+                        </button>
+                    </div>
+                    
+                    <button type="button" id="finish-planning-btn" class="w-full py-3 rounded-lg font-semibold text-sub hover:text-main">
+                        I'm done planning for now
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+    </div> <!-- End Modal Container -->
 
-["dragenter", "dragover"].forEach(eventName => {
-  dropArea.addEventListener(eventName, () => dropArea.classList.add("dragover"), false);
-});
+    <script>
+        // Use an IIFE to scope variables and prevent global pollution
+        (function() {
+            // --- STATE ---
+            let schedule = [];
+            let isContinuousPlanning = false;
+            let activeReminders = {}; // Store setTimeout IDs
 
-["dragleave", "drop"].forEach(eventName => {
-  dropArea.addEventListener(eventName, () => dropArea.classList.remove("dragover"), false);
-});
+            // --- "AI" SUGGESTIONS ---
+            const suggestions = {
+                morning: ['Deep Work', 'Planning', 'Emails', 'Workout'],
+                noon: ['Lunch', 'Walk', 'Admin', 'Read'],
+                afternoon: ['Meetings', 'Project Work', 'Errands'],
+                evening: ['Cook', 'Social', 'Rest', 'Read'],
+                generic: ['Meditate', 'Journal', 'Hydrate', 'Break']
+            };
 
-dropArea.addEventListener("drop", handleDrop, false);
-fileInput.addEventListener("change", function() { handleFiles(this.files) });
+            // --- PURE SVG ICONS (NO DEPENDENCIES) ---
+            const icons = {
+                sun: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>`,
+                moon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>`,
+                plus: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>`,
+                trash: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>`,
+            };
 
-function handleDrop(e) {
-  const dt = e.dataTransfer;
-  const files = dt.files;
-  fileInput.files = files; // Update input (Note: simple assignment for demo)
-  handleFiles(files);
-}
+            // --- DOM ELEMENTS ---
+            const $ = (selector) => document.querySelector(selector);
+            const $$ = (selector) => document.querySelectorAll(selector);
 
-function handleFiles(files) {
-  filePreview.innerHTML = "";
-  if (files.length > 0) {
-    clearBtn.style.display = "inline-block";
-    [...files].forEach(previewFile);
-  } else {
-    clearBtn.style.display = "none";
-  }
-}
+            const dom = {
+                html: document.documentElement,
+                themeToggle: $('#theme-toggle'),
+                todayDate: $('#today-date'),
+                scheduleList: $('#schedule-list'),
+                emptyStateTemplate: $('#empty-state-template'),
+                fabAdd: $('#fab-add'),
+                modalContainer: $('#modal-container'),
+                onboardingModal: $('#onboarding-modal'),
+                onboardingForm: $('#onboarding-form'),
+                taskModal: $('#task-modal'),
+                taskForm: $('#task-form'),
+                taskModalTitle: $('#task-modal-title'),
+                taskId: $('#task-id'),
+                taskName: $('#task-name'),
+                startTime: $('#start-time'),
+                endTime: $('#end-time'),
+                deleteTaskBtn: $('#delete-task-btn'),
+                finishPlanningBtn: $('#finish-planning-btn'),
+                suggestionsContainer: $('#suggestions-container'),
+                suggestionsChips: $('#suggestions-chips'),
+            };
 
-function previewFile(file) {
-  const reader = new FileReader();
-  const card = document.createElement("div");
-  card.className = "file-card";
-  
-  const mediaDiv = document.createElement("div");
-  mediaDiv.className = "file-card-media";
-  
-  const nameDiv = document.createElement("div");
-  nameDiv.className = "file-card-name";
-  nameDiv.textContent = file.name;
+            // --- INITIALIZATION ---
+            document.addEventListener('DOMContentLoaded', () => {
+                // 1. Load state from localStorage
+                loadTheme();
+                loadSchedule();
 
-  reader.readAsDataURL(file);
-  reader.onloadend = function() {
-    if (file.type.startsWith("image/")) {
-      const img = document.createElement("img");
-      img.src = reader.result;
-      mediaDiv.appendChild(img);
-    } else {
-      mediaDiv.textContent = getIcon(file.type);
-    }
-    card.appendChild(mediaDiv);
-    card.appendChild(nameDiv);
-    filePreview.appendChild(card);
-  }
-}
+                // 2. Set up UI
+                dom.fabAdd.innerHTML = icons.plus;
+                updateThemeIcon();
+                updateTodayDate();
+                renderSchedule();
 
-function getIcon(type) {
-  if (type.includes("pdf")) return "📄";
-  if (type.includes("spreadsheet") || type.includes("excel") || type.includes("csv")) return "📊";
-  if (type.includes("word") || type.includes("document")) return "📝";
-  if (type.includes("zip")) return "📦";
-  return "📁";
-}
+                // 3. Set up event listeners
+                setupEventListeners();
 
-clearBtn.addEventListener("click", (e) => {
-  e.stopPropagation(); // Prevent triggering dropArea click
-  fileInput.value = "";
-  filePreview.innerHTML = "";
-  clearBtn.style.display = "none";
-});
+                // 4. Request notification permission
+                requestNotificationPermission();
+            });
 
-/* --- FORM SUBMISSION --- */
-// Prevent "Enter" key from submitting form prematurely
-window.addEventListener("keydown", function(e) {
-  if (e.key === "Enter" && e.target.nodeName !== "TEXTAREA" && e.target.nodeName !== "BUTTON") {
-    e.preventDefault();
-    // If we are on last step, verify, else trigger next
-    if(currentStep < totalSteps - 1) {
-      nextStep();
-    }
-  }
-});
+            // --- EVENT LISTENERS ---
+            function setupEventListeners() {
+                dom.themeToggle.addEventListener('click', toggleTheme);
+                
+                // Modal triggers
+                dom.fabAdd.addEventListener('click', () => {
+                    isContinuousPlanning = false;
+                    const lastTask = schedule[schedule.length - 1];
+                    const nextStart = lastTask ? lastTask.end : '09:00';
+                    openTaskModal({ start: nextStart });
+                });
+                
+                // Note: The empty state button is added dynamically,
+                // so its listener is added in renderSchedule()
+                
+                // Onboarding
+                dom.onboardingForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const wakeUpTime = $('#wake-up').value;
+                    hideModal(dom.onboardingModal);
+                    
+                    isContinuousPlanning = true; // Start the flow
+                    openTaskModal({ start: wakeUpTime });
+                });
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  
-  // Final Validation
-  if (!validateStep(currentStep)) return;
+                // Task Form
+                dom.taskForm.addEventListener('submit', handleTaskSave);
+                dom.deleteTaskBtn.addEventListener('click', handleDeleteTask);
+                dom.finishPlanningBtn.addEventListener('click', () => {
+                    isContinuousPlanning = false;
+                    hideModal(dom.taskModal);
+                });
 
-  const btn = document.getElementById("submitBtn");
-  const msg = document.getElementById("responseMessage");
-  const ts = document.getElementById("tsField");
-  
-  ts.value = new Date().toISOString();
-  
-  btn.disabled = true;
-  btn.classList.add("loading");
-  msg.style.display = "none";
+                // Close modal on backdrop click
+                $$('.modal-backdrop').forEach(backdrop => {
+                    backdrop.addEventListener('click', () => {
+                        isContinuousPlanning = false;
+                        hideModal(dom.onboardingModal);
+                        hideModal(dom.taskModal);
+                    });
+                });
+            }
 
-  const formData = new FormData(form);
+            // --- THEME ---
+            function loadTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                dom.html.className = savedTheme;
+            }
 
-  // --- SIMULATION MODE OR REAL FETCH ---
-  if (SIMULATION_MODE) {
-    // Fake network delay
-    setTimeout(() => {
-      btn.classList.remove("loading");
-      btn.disabled = false;
-      msg.className = "success";
-      msg.innerHTML = "✅ <strong>Simulation Success:</strong> Data is valid and ready.<br>Connect a real Webhook URL in the code to go live.";
-      msg.style.display = "block";
-      msg.scrollIntoView({ behavior: 'smooth' });
-      console.log("Form Data Simulated:", Object.fromEntries(formData));
-    }, 1500);
-  } else {
-    // Real Submission
-    try {
-      const response = await fetch(WEBHOOK_URL, {
-        method: "POST",
-        body: formData
-      });
+            function toggleTheme() {
+                dom.html.classList.toggle('dark');
+                dom.html.classList.toggle('light');
+                const newTheme = dom.html.classList.contains('dark') ? 'dark' : 'light';
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon();
+            }
 
-      btn.classList.remove("loading");
-      btn.disabled = false;
+            function updateThemeIcon() {
+                if (dom.html.classList.contains('dark')) {
+                    dom.themeToggle.innerHTML = icons.sun;
+                } else {
+                    dom.themeToggle.innerHTML = icons.moon;
+                }
+            }
+            
+            // --- UI & DATE ---
+            function updateTodayDate() {
+                const today = new Date();
+                dom.todayDate.textContent = today.toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
 
-      if (response.ok) {
-        msg.className = "success";
-        msg.textContent = "Success! Intelligence package received.";
-        msg.style.display = "block";
-        form.reset();
-        filePreview.innerHTML = "";
-        currentStep = 0;
-        updateUI();
-      } else {
-        throw new Error("Server returned " + response.status);
-      }
-    } catch (err) {
-      btn.classList.remove("loading");
-      btn.disabled = false;
-      msg.className = "error";
-      msg.textContent = "Submission Failed: Check Webhook URL or Network.";
-      msg.style.display = "block";
-      console.error(err);
-    }
-  }
-});
+            // --- MODALS ---
+            function showModal(modal) {
+                dom.modalContainer.classList.remove('hidden');
+                modal.classList.remove('hidden');
+            }
 
-// Initialize
-updateUI();
-</script>
+            function hideModal(modal) {
+                modal.classList.add('hidden');
+                // Check if any *other* modals are open
+                const anyModalOpen = $$('#modal-container > div:not(.hidden)').length > 0;
+                if (!anyModalOpen) {
+                    dom.modalContainer.classList.add('hidden');
+                }
+            }
 
+            // --- TASK MANAGEMENT ---
+            function loadSchedule() {
+                schedule = JSON.parse(localStorage.getItem('schedule')) || [];
+                schedule.sort((a, b) => a.start.localeCompare(b.start)); // Sort by time
+            }
+
+            function saveSchedule() {
+                schedule.sort((a, b) => a.start.localeCompare(b.start));
+                localStorage.setItem('schedule', JSON.stringify(schedule));
+            }
+
+            function renderSchedule() {
+                dom.scheduleList.innerHTML = ''; // Clear list
+                clearReminders(); // Clear old reminders
+                
+                if (schedule.length === 0) {
+                    const emptyStateNode = dom.emptyStateTemplate.content.cloneNode(true);
+                    dom.scheduleList.appendChild(emptyStateNode);
+                    
+                    // Attach listener to the new empty state button
+                    $('#start-planning-empty').addEventListener('click', () => {
+                        showModal(dom.onboardingModal);
+                    });
+                    return;
+                }
+
+                schedule.forEach((task, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'card rounded-lg p-4 flex items-center justify-between schedule-item-animation cursor-pointer';
+                    li.style.animationDelay = `${index * 50}ms`; // Stagger animation
+                    li.dataset.id = task.id;
+
+                    li.innerHTML = `
+                        <div class="flex items-center pointer-events-none"> <!-- pointer-events-none to pass click to li -->
+                            <div class="flex-shrink-0 w-16">
+                                <p class="font-semibold text-sm text-main">${formatTime(task.start)}</p>
+                                <p class="text-xs text-sub">to ${formatTime(task.end)}</p>
+                            </div>
+                            <div class="ml-4 border-l-2 pl-4" style="border-color: var(--primary);">
+                                <p class="font-medium text-main">${task.name}</p>
+                                <p class="text-sm text-sub">${getDuration(task.start, task.end)}</min>
+                            </div>
+                        </div>
+                        <button class="delete-btn p-2 rounded-full text-sub hover:text-red-500 z-10">
+                            ${icons.trash}
+                        </button>
+                    `;
+                    
+                    // Add delete functionality
+                    li.querySelector('.delete-btn').addEventListener('click', (e) => {
+                        e.stopPropagation(); // Stop task click
+                        schedule = schedule.filter(t => t.id !== task.id);
+                        saveSchedule();
+                        renderSchedule();
+                    });
+
+                    // Add edit functionality
+                    li.addEventListener('click', () => {
+                        isContinuousPlanning = false;
+                        openTaskModal(task);
+                    });
+                    
+                    dom.scheduleList.appendChild(li);
+                    
+                    // Set a reminder for this task
+                    setReminder(task);
+                });
+            }
+
+            function handleTaskSave(e) {
+                e.preventDefault();
+                
+                const task = {
+                    id: dom.taskId.value || `task-${Date.now()}`,
+                    name: dom.taskName.value,
+                    start: dom.startTime.value,
+                    end: dom.endTime.value
+                };
+
+                // Simple validation
+                if (!task.name || !task.start || !task.end) {
+                    alert("Please fill out all fields.");
+                    return;
+                }
+                
+                if (timeToMinutes(task.end) <= timeToMinutes(task.start)) {
+                    alert("End time must be after start time.");
+                    return;
+                }
+
+                if (checkConflict(task)) {
+                    // This is a more premium-feeling "alert"
+                    showTempAlert("Warning: This task overlaps with an existing task!");
+                }
+
+                // Find and replace if editing, or add new
+                const existingIndex = schedule.findIndex(t => t.id === task.id);
+                if (existingIndex > -1) {
+                    schedule[existingIndex] = task;
+                } else {
+                    schedule.push(task);
+                }
+
+                saveSchedule();
+                renderSchedule();
+
+                if (isContinuousPlanning) {
+                    // This is the "continuous" flow
+                    openTaskModal({ start: task.end }); // Open next modal
+                } else {
+                    hideModal(dom.taskModal);
+                }
+            }
+
+            function handleDeleteTask() {
+                const id = dom.taskId.value;
+                schedule = schedule.filter(t => t.id !== id);
+                saveSchedule();
+                renderSchedule();
+                hideModal(dom.taskModal);
+                isContinuousPlanning = false;
+            }
+
+            function openTaskModal(task) { // task = {id?, name?, start?, end?}
+                dom.taskId.value = task.id || '';
+                dom.taskName.value = task.name || '';
+                dom.startTime.value = task.start || '';
+                dom.endTime.value = task.end || (task.start ? addMinutes(task.start, 60) : '');
+                
+                if (task.id) {
+                    // Editing existing task
+                    dom.taskModalTitle.textContent = 'Edit Task';
+                    dom.deleteTaskBtn.classList.remove('hidden');
+                } else {
+                    // Adding new task
+                    dom.taskModalTitle.textContent = isContinuousPlanning ? "What's next?" : "Add New Task";
+                    dom.deleteTaskBtn.classList.add('hidden');
+                }
+                
+                populateSuggestions(task);
+                showModal(dom.taskModal);
+                dom.taskName.focus(); // Auto-focus
+            }
+
+            // --- "AI" SUGGESTIONS ---
+            function populateSuggestions(task) {
+                dom.suggestionsChips.innerHTML = '';
+                let suggestionSet = new Set(suggestions.generic);
+                
+                const startHour = parseInt((task.start || '09:00').split(':')[0]);
+                
+                if (startHour >= 5 && startHour < 12) {
+                    suggestions.morning.forEach(s => suggestionSet.add(s));
+                } else if (startHour >= 12 && startHour < 17) {
+                    suggestions.noon.forEach(s => suggestionSet.add(s));
+                } else if (startHour >= 17 && startHour < 21) {
+                    suggestions.evening.forEach(s => suggestionSet.add(s));
+                }
+
+                suggestionSet.forEach(text => {
+                    const chip = document.createElement('button');
+                    chip.type = 'button';
+                    chip.className = 'px-3 py-1 rounded-full text-sm';
+                    chip.style.backgroundColor = 'var(--bg)';
+                    chip.style.color = 'var(--text-secondary)';
+                    chip.textContent = text;
+                    chip.onclick = () => { dom.taskName.value = text; };
+                    dom.suggestionsChips.appendChild(chip);
+                });
+            }
+
+            // --- REMINDERS & NOTIFICATIONS ---
+            function requestNotificationPermission() {
+                if ('Notification' in window && Notification.permission !== 'denied') {
+                    Notification.requestPermission();
+                }
+            }
+
+            function clearReminders() {
+                Object.values(activeReminders).forEach(clearTimeout);
+                activeReminders = {};
+            }
+
+            function setReminder(task) {
+                const now = new Date();
+                const [hours, minutes] = task.start.split(':');
+                const taskTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+                
+                const timeToTask = taskTime.getTime() - now.getTime();
+
+                if (timeToTask > 0) { // Only for future tasks
+                    const reminderID = setTimeout(() => {
+                        showNotification(task);
+                    }, timeToTask);
+                    activeReminders[task.id] = reminderID;
+                }
+            }
+
+            function showNotification(task) {
+                const body = `Your task "${task.name}" is starting now.`;
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('Task Reminder', { body: body });
+                } else {
+                    // Fallback for when notifications are not granted
+                    // This is a custom toast-like alert. Much better than window.alert()
+                    showTempAlert(`Reminder: ${body}`);
+                }
+            }
+            
+            // --- CUSTOM ALERT (BETTER THAN window.alert()) ---
+            function showTempAlert(message) {
+                let alertBox = $('#temp-alert');
+                if (!alertBox) {
+                    alertBox = document.createElement('div');
+                    alertBox.id = 'temp-alert';
+                    alertBox.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-50 p-4 rounded-lg shadow-lg text-white font-medium';
+                    alertBox.style.backgroundColor = '#ef4444'; // Red
+                    document.body.appendChild(alertBox);
+                }
+                alertBox.textContent = message;
+                alertBox.style.opacity = '1';
+                alertBox.style.transition = 'opacity 0.3s';
+                
+                setTimeout(() => {
+                    alertBox.style.opacity = '0';
+                }, 3000);
+            }
+
+            // --- UTILITY FUNCTIONS ---
+            function formatTime(timeString) { // "14:30"
+                const [hours, minutes] = timeString.split(':').map(Number);
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const h = hours % 12 === 0 ? 12 : hours % 12;
+                return `${h}:${String(minutes).padStart(2, '0')} ${ampm}`;
+            }
+
+            function timeToMinutes(time) { // "14:30" -> 870
+                const [hours, minutes] = time.split(':').map(Number);
+                return (hours * 60) + minutes;
+            }
+
+            function addMinutes(timeString, mins) {
+                let totalMins = timeToMinutes(timeString) + mins;
+                if (totalMins >= 1440) totalMins = 1439; // Cap at 23:59
+                const h = Math.floor(totalMins / 60);
+                const m = totalMins % 60;
+                return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+            }
+
+            function getDuration(start, end) {
+                const diff = timeToMinutes(end) - timeToMinutes(start);
+                if (diff <= 0) return '0m';
+                const h = Math.floor(diff / 60);
+                const m = diff % 60;
+                return (h > 0 ? `${h}h ` : '') + (m > 0 ? `${m}m` : '');
+            }
+            
+            function checkConflict(task) {
+                const startMins = timeToMinutes(task.start);
+                const endMins = timeToMinutes(task.end);
+
+                return schedule.some(t => {
+                    if (t.id === task.id) return false; // Don't check against self
+                    const tStart = timeToMinutes(t.start);
+                    const tEnd = timeToMinutes(t.end);
+                    // Check for overlap
+                    return (startMins < tEnd) && (endMins > tStart);
+                });
+            }
+
+        })(); // End of IIFE
+    </script>
 </body>
 </html>
+
