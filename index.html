@@ -1,674 +1,1211 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en" class="theme-aurora">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Epoch Scheduler</title>
+    <title>Epoch Horizon | v5 (Modal Fix)</title>
     
-    <!-- Using Tailwind for a premium, stable, and responsive UI -->
+    <!-- TAILWIND CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Font (Inter) -->
+    <!-- GOOGLE FONT (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* Base styles */
-        body {
-            font-family: 'Inter', sans-serif;
-            /* Transition for background color */
-            @apply transition-colors duration-300;
-        }
-
-        /* Light mode (default) */
+        /* --- UX/UI DESIGNER: THEME SYSTEM V3 --- */
         :root {
-            --bg: #f4f4f5; /* zinc-100 */
-            --card-bg: #ffffff;
-            --text-primary: #18181b; /* zinc-900 */
-            --text-secondary: #52525b; /* zinc-600 */
-            --border: #e4e4e7; /* zinc-200 */
-            --primary: #2563eb; /* blue-600 */
-            --primary-text: #ffffff;
+            font-family: 'Inter', sans-serif;
+            --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+            --ease-in-out-sine: cubic-bezier(0.445, 0.05, 0.55, 0.95);
         }
 
-        /* Dark mode */
-        html.dark {
-            --bg: #09090b; /* zinc-950 */
-            --card-bg: #18181b; /* zinc-900 */
-            --text-primary: #f4f4f5; /* zinc-100 */
-            --text-secondary: #a1a1aa; /* zinc-400 */
-            --border: #27272a; /* zinc-800 */
-            --primary: #3b82f6; /* blue-500 */
-            --primary-text: #ffffff;
-        }
-
-        /* Applying theme colors */
-        body {
-            background-color: var(--bg);
-            color: var(--text-primary);
-        }
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-        }
-        .text-main { color: var(--text-primary); }
-        .text-sub { color: var(--text-secondary); }
-        .border-main { border-color: var(--border); }
-        .button-primary {
-            background-color: var(--primary);
-            color: var(--primary-text);
-        }
-        .button-secondary {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-        }
-        /* Styling for inputs to match theme */
-        input[type="time"], input[type="text"] {
-            background-color: var(--bg);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-        }
-        /* Ensure placeholders are visible in dark mode */
-        ::placeholder {
-            color: var(--text-secondary);
-            opacity: 0.7;
+        /* --- 1. THEME: AURORA (DEFAULT) --- */
+        html.theme-aurora {
+            --bg-primary: #10101F; /* Deep space blue */
+            --bg-secondary: #191A2C; /* Lighter panel blue */
+            --bg-glass: rgba(25, 26, 44, 0.6);
+            --text-primary: #F0F2F7;
+            --text-secondary: #A0A5B4;
+            --text-tertiary: #6B7280;
+            --border-primary: #2D2E40;
+            --border-secondary: #424651;
+            --primary-accent: #00BFFF; /* DeepSkyBlue */
+            --primary-accent-text: #FFFFFF;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+            --shadow-neumorphic-inset: inset 6px 6px 12px #0c0c17, inset -6px -6px 12px #141427;
+            --shadow-neumorphic-outset: 6px 6px 12px #0c0c17, -6px -6px 12px #141427;
+            --backdrop-blur: 20px;
         }
         
-        /* Modal styles for the premium feel */
-        .modal-backdrop {
-            @apply fixed inset-0 z-40 bg-black/50 backdrop-blur-sm;
-            animation: fadeIn 0.2s ease;
+        html.theme-aurora body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(25, 26, 44, 0.8), 
+                var(--bg-primary), 
+                rgba(79, 70, 229, 0.2), 
+                var(--bg-primary),
+                rgba(0, 191, 255, 0.1)
+            );
+            background-size: 300% 300%;
+            animation: aurora-pan 25s linear infinite;
+            z-index: -1;
         }
-        .modal-content {
-            @apply fixed z-50 w-full max-w-md p-6 rounded-t-2xl sm:rounded-2xl;
-            /* Mobile-first: bottom sheet */
-            bottom: 0; left: 0; right: 0;
-            /* Desktop: centered */
-            sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2;
-            background-color: var(--card-bg);
-            animation: slideUp 0.3s ease-out;
+
+        @keyframes aurora-pan {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        @media (min-width: 640px) {
-            .modal-content {
-                animation: scaleIn 0.3s ease-out;
+
+        /* --- 2. THEME: LIGHT --- */
+        html.theme-light {
+            --bg-primary: #F4F7FE;
+            --bg-secondary: #FFFFFF;
+            --bg-glass: rgba(255, 255, 255, 0.6);
+            --text-primary: #121217;
+            --text-secondary: #5A5F71;
+            --text-tertiary: #9A9FAF;
+            --border-primary: #EAEBF2;
+            --border-secondary: #DADDE4;
+            --primary-accent: #4F46E5;
+            --primary-accent-text: #FFFFFF;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+            --shadow-neumorphic-inset: inset 6px 6px 12px #e6e9f2, inset -6px -6px 12px #ffffff;
+            --shadow-neumorphic-outset: 6px 6px 12px #d4d7e2, -6px -6px 12px #ffffff;
+            --backdrop-blur: 16px;
+        }
+
+        /* --- CORE STYLES --- */
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s var(--ease-out-quart), color 0.3s var(--ease-out-quart);
+        }
+        
+        #app-container {
+            padding-bottom: 100px; /* Space for mobile nav */
+        }
+        
+        @media (min-width: 768px) {
+            #app-container {
+                padding-bottom: 0;
             }
+        }
+
+        /* Glassmorphism Panel */
+        .panel-glass {
+            background-color: var(--bg-glass);
+            backdrop-filter: blur(var(--backdrop-blur));
+            -webkit-backdrop-filter: blur(var(--backdrop-blur));
+            border: 1px solid var(--border-primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Neumorphic Button (Subtle) */
+        .btn-neumorphic {
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-neumorphic-outset);
+            border: 1px solid var(--border-primary);
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.2s var(--ease-in-out-sine);
+        }
+        .btn-neumorphic:hover {
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+        .btn-neumorphic:active,
+        .btn-neumorphic.active {
+            box-shadow: var(--shadow-neumorphic-inset);
+            color: var(--primary-accent);
+        }
+        
+        /* Primary CTA Button */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-accent) 0%, #4F46E5 100%);
+            color: var(--primary-accent-text);
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s var(--ease-in-out-sine);
+        }
+        .btn-primary:hover {
+            transform: scale(1.03);
+            box-shadow: var(--shadow-md), 0 0 20px 0 var(--primary-accent);
+        }
+
+        /* $1M Shimmer Effect */
+        .pro-lock {
+            background: linear-gradient(110deg, var(--primary-accent) 20%, #D946EF 40%, #D946EF 60%, var(--primary-accent) 80%);
+            background-size: 200% 100%;
+            color: var(--primary-accent-text);
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 4px;
+            border-radius: 4px;
+            margin-left: 8px;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            from { background-position: 200% 0; }
+            to { background-position: -200% 0; }
         }
 
         /* Animations */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        @keyframes scaleIn { 
-            from { opacity: 0; transform: translate(-50%, -45%) scale(0.95); } 
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); } 
+        @keyframes fade-slide-up {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes slideInItem {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
+        .animate-fade-slide-up {
+            animation: fade-slide-up 0.5s var(--ease-out-quart) forwards;
         }
-        .schedule-item-animation {
-            animation: slideInItem 0.3s ease-out forwards;
+
+        @keyframes scale-in {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-scale-in {
+            animation: scale-in 0.3s var(--ease-out-quart) forwards;
+        }
+
+        /* Custom Input */
+        .input-premium {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-neumorphic-inset);
+            transition: all 0.2s var(--ease-in-out-sine);
+        }
+        .input-premium:focus {
+            box-shadow: var(--shadow-neumorphic-inset), 0 0 0 2px var(--primary-accent);
+            outline: none;
+            border-color: var(--primary-accent);
+        }
+
+        /* Timeline */
+        .timeline-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            box-shadow: var(--shadow-neumorphic-inset);
+        }
+        .timeline-hour { border-bottom: 1px solid var(--border-primary); }
+        .timeline-hour-label { 
+            color: var(--text-tertiary); 
+            font-size: 0.75rem; 
+            font-weight: 600;
+            width: 3.5rem; /* w-14 */
+        }
+        .task-item {
+            position: absolute;
+            left: 4.0rem; /* 3.5rem label + 0.5rem padding */
+            right: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-accent) 0%, #a855f7 100%);
+            border-left: 4px solid var(--primary-accent);
+            color: var(--primary-accent-text);
+            transition: all 0.3s var(--ease-out-quart);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        .task-item:hover {
+            transform: scale(1.02);
+            z-index: 10;
+        }
+        .category-work { background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); border-color: #4F46E5; }
+        .category-personal { background: linear-gradient(135deg, #10B981 0%, #34D399 100%); border-color: #10B981; }
+        .category-health { background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%); border-color: #F59E0B; }
+        .category-break { background: linear-gradient(135deg, #6B7280 0%, #9CA3AF 100%); border-color: #6B7280; }
+
+        /* Modal */
+        .modal-backdrop { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); }
+        .modal-content { background-color: var(--bg-secondary); box-shadow: var(--shadow-md); }
+
+        /* Habit Tracker */
+        .habit-day {
+            width: 30px; height: 30px;
+            border: 2px solid var(--border-secondary);
+            transition: all 0.2s var(--ease-in-out-sine);
+            cursor: pointer;
+        }
+        .habit-day.completed {
+            background-color: var(--primary-accent);
+            border-color: var(--primary-accent);
+        }
+
+        /* Task List Item */
+        .task-list-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            box-shadow: var(--shadow-neumorphic-outset);
+            transition: all 0.2s var(--ease-in-out-sine);
+        }
+        .task-list-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .task-list-item input[type="checkbox"]:checked + label {
+            text-decoration: line-through;
+            color: var(--text-tertiary);
         }
         
-        /* Custom focus rings for better accessibility */
-        input:focus {
-             outline: 2px solid var(--primary);
-             outline-offset: 2px;
-             border-color: var(--primary);
-        }
-        .button-primary:focus-visible, .button-secondary:focus-visible, button:focus-visible {
-             outline: 2px solid var(--primary);
-             outline-offset: 2px;
-        }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased min-h-screen">
 
-    <!-- Header -->
-    <header class="sticky top-0 z-10 p-4" style="background-color: var(--bg); opacity: 0.95;">
-        <div class="max-w-3xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-main">Epoch</h1>
-            <button id="theme-toggle" class="p-2 rounded-full text-sub hover:text-main">
-                <!-- Icon Injected by JS -->
-            </button>
-        </div>
-    </header>
+    <div id="app-container" class="md:grid md:grid-cols-[80px_1fr] min-h-screen">
 
-    <!-- Main Content -->
-    <main class="max-w-3xl mx-auto p-4">
-        <!-- Today's Date -->
-        <div class="mb-6">
-            <h2 id="today-date" class="text-xl font-semibold text-main"></h2>
-            <p class="text-sub">Your schedule for today.</p>
-        </div>
-
-        <!-- Schedule List -->
-        <ul id="schedule-list" class="space-y-3">
-            <!-- Empty state is a template, cloned by JS -->
-        </ul>
-        
-        <!-- Empty State Template (hidden by default) -->
-        <template id="empty-state-template">
-            <li id="empty-state" class="text-center py-10 card rounded-lg">
-                <p class="text-sub">Your day is empty.</p>
-                <button id="start-planning-empty" class="mt-4 px-4 py-2 rounded-lg button-primary text-sm font-medium">
-                    Start Planning
+        <!-- --- DESKTOP NAV RAIL --- -->
+        <nav class="hidden md:flex flex-col items-center p-4 space-y-6 bg-secondary border-r border-border-primary">
+            <!-- Logo -->
+            <div class="p-2 rounded-lg" style="background: linear-gradient(135deg, var(--primary-accent) 0%, #4F46E5 100%);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 2v20M7 2v20M12 2v8m0 4v8"/></svg>
+            </div>
+            <!-- Main Nav -->
+            <div class="space-y-4">
+                <button class="nav-btn p-3 rounded-lg" data-view="timeline" title="Timeline">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
                 </button>
-            </li>
-        </template>
-            
-    </main>
-    
-    <!-- Floating Action Button -->
-    <button id="fab-add" class="fixed z-30 bottom-6 right-6 w-14 h-14 rounded-full button-primary shadow-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95">
-        <!-- Plus Icon Injected by JS -->
+                <button class="nav-btn p-3 rounded-lg" data-view="tasks" title="Tasks">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                </button>
+                <button class="nav-btn p-3 rounded-lg" data-view="habits" title="Habits">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/></svg>
+                </button>
+            </div>
+            <!-- Settings (Bottom) -->
+            <button class="nav-btn p-3 rounded-lg mt-auto" data-view="settings" title="Settings">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+        </nav>
+
+        <!-- --- MAIN CONTENT (VIEW CONTAINER) --- -->
+        <main class="md:p-8 pt-8 p-4">
+        
+            <!-- --- VIEW 1: TIMELINE --- -->
+            <div id="timeline-view" class="app-view">
+                <!-- Header -->
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-2">
+                        <button id="prev-day-btn" class="btn-neumorphic p-2 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                        </button>
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-bold text-primary" id="current-date-display"></h2>
+                            <p class="text-base text-secondary" id="current-day-display"></p>
+                        </div>
+                        <button id="next-day-btn" class="btn-neumorphic p-2 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                        </button>
+                    </div>
+                    <button id="focus-mode-btn-header" class="btn-neumorphic rounded-full px-5 py-2 hidden md:flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Focus
+                    </button>
+                </div>
+
+                <!-- Timeline Card -->
+                <div id="timeline-container" class="timeline-card relative rounded-2xl overflow-hidden">
+                    <div id="timeline-hours" class="relative z-0"></div>
+                    <div id="timeline-tasks" class="absolute inset-0 z-10"></div>
+                </div>
+                
+                <!-- Empty State Card -->
+                <div id="empty-state-panel" class="hidden timeline-card p-8 md:p-16 rounded-2xl text-center animate-fade-slide-up">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary-accent mx-auto mb-6"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 2v20M7 2v20M12 2v8m0 4v8"/></svg>
+                    <h3 class="text-2xl font-bold text-primary mb-2">Your Day is Clear</h3>
+                    <p class="text-secondary mb-6 max-w-sm mx-auto">You have no tasks scheduled for this day. Get started by adding a new task or letting the AI plan for you.</p>
+                    <button id="ai-schedule-empty-btn" class="btn-neumorphic rounded-full px-6 py-3">
+                        Auto-Schedule
+                    </button>
+                </div>
+            </div>
+
+            <!-- --- VIEW 2: TASKS (INBOX) --- -->
+            <div id="tasks-view" class="app-view hidden space-y-6">
+                <h2 class="text-2xl md:text-3xl font-bold text-primary">Task Inbox</h2>
+                
+                <!-- AI Quick Add -->
+                <form id="ai-quick-add-form" class="relative">
+                    <div class="absolute left-3 top-1/2 -translate-y-1/2 text-tertiary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-m-9 9v6h6l9-9z"/><path d="m18 13-6 6"/><path d="m2 22 2-2"/></svg>
+                    </div>
+                    <input type="text" id="ai-quick-add-input" class="input-premium w-full text-sm" placeholder="e.g., Team meeting at 14:00 tomorrow">
+                </form>
+                
+                <!-- Task List Container -->
+                <div id="task-list-container" class="space-y-4">
+                    <!-- Tasks will be rendered here by JS -->
+                </div>
+            </div>
+
+            <!-- --- VIEW 3: HABITS --- -->
+            <div id="habits-view" class="app-view hidden space-y-6">
+                <h2 class="text-2xl md:text-3xl font-bold text-primary">Habit Tracker</h2>
+                <div id="habit-tracker-container" class="space-y-4">
+                    <!-- Habits will be rendered here by JS -->
+                </div>
+            </div>
+
+            <!-- --- VIEW 4: SETTINGS --- -->
+            <div id="settings-view" class="app-view hidden space-y-6 max-w-xl">
+                <h2 class="text-2xl md:text-3xl font-bold text-primary">Settings</h2>
+                
+                <!-- Theme Selector -->
+                <div class="p-4 rounded-lg bg-secondary border border-border-primary">
+                    <label class="text-sm font-semibold text-secondary">Theme</label>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <button class="theme-btn btn-neumorphic px-4 py-2 rounded-lg" data-theme="theme-aurora">Aurora</button>
+                        <button class="theme-btn btn-neumorphic px-4 py-2 rounded-lg" data-theme="theme-light">Light</button>
+                    </div>
+                </div>
+
+                <!-- Alarm Sound -->
+                <div class="p-4 rounded-lg bg-secondary border border-border-primary">
+                    <label for="alarm-sound" class="text-sm font-semibold text-secondary">Alarm Sound</label>
+                    <select id="alarm-sound" class="input-premium w-full mt-1">
+                        <option value="chime">Chime</option>
+                        <option value="sonar">Sonar</option>
+                        <option value="synth">Synth</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+                
+                <!-- Soundscapes -->
+                <div class="p-4 rounded-lg bg-secondary border border-border-primary">
+                    <label class="text-sm font-semibold text-secondary">Ambient Soundscapes</label>
+                    <div class="flex items-center gap-2 mt-2">
+                        <button id="soundscape-btn" class="btn-neumorphic px-4 py-2 rounded-lg flex-grow">Play Rain</button>
+                        <input id="soundscape-volume" type="range" min="0" max="1" step="0.1" value="0.5" class="w-full">
+                    </div>
+                </div>
+
+                <!-- Pro Upsell -->
+                <div class="bg-gradient-to-br from-primary-accent to-fuchsia-500 rounded-xl p-6 text-white text-center space-y-3">
+                    <h3 class="text-lg font-bold">Unlock Your Potential</h3>
+                    <p class="text-sm opacity-90">Upgrade to Pro to access AI optimization, life dashboards, and more.</p>
+                    <button data-modal-open="upsell-modal" class="bg-white/20 backdrop-blur-sm text-white font-semibold w-full py-2 rounded-lg transition-all hover:bg-white/30">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- --- MOBILE NAV V3 --- -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 panel-glass p-2 flex justify-around items-center z-50 border-t border-border-primary">
+        <button class="nav-btn p-2 rounded-lg flex flex-col items-center w-1/4" data-view="timeline">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+            <span class="text-xs font-medium">Timeline</span>
+        </button>
+        <button class="nav-btn p-2 rounded-lg flex flex-col items-center w-1/4" data-view="tasks">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+            <span class="text-xs font-medium">Tasks</span>
+        </button>
+        <button class="nav-btn p-2 rounded-lg flex flex-col items-center w-1/4" data-view="habits">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/></svg>
+            <span class="text-xs font-medium">Habits</span>
+        </button>
+        <button class="nav-btn p-2 rounded-lg flex flex-col items-center w-1/4" data-view="settings">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span class="text-xs font-medium">Settings</span>
+        </button>
+    </nav>
+
+    <!-- FLOATING ACTION BUTTON (FAB) -->
+    <button data-modal-open="task-modal" class="btn-primary md:hidden fixed bottom-24 right-6 w-16 h-16 rounded-full flex items-center justify-center shadow-lg z-50">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
     </button>
+    
+    <!-- --- MODALS --- -->
 
-    <!-- Modal Container -->
-    <div id="modal-container" class="hidden">
-        
-        <!-- Onboarding Modal -->
-        <div id="onboarding-modal" class="hidden">
-            <div class="modal-backdrop"></div>
-            <div class="modal-content">
-                <h2 class="text-xl font-bold text-main mb-2">Welcome!</h2>
-                <p class="text-sub mb-6">Let's design your day. What time do you wake up?</p>
-                <form id="onboarding-form">
-                    <label for="wake-up" class="text-sm font-medium text-sub">Wake Up Time</label>
-                    <input type="time" id="wake-up" value="07:00" class="w-full p-3 mt-1 rounded-lg text-lg">
-                    <button type="submit" class="w-full p-3 mt-6 rounded-lg button-primary font-semibold">
-                        Start Planning
-                    </button>
-                </form>
-            </div>
-        </div>
-        
-        <!-- Task Modal -->
-        <div id="task-modal" class="hidden">
-            <div class="modal-backdrop"></div>
-            <div class="modal-content">
-                <h2 id="task-modal-title" class="text-xl font-bold text-main mb-6">What's next?</h2>
-                <form id="task-form" class="space-y-4">
-                    <input type="hidden" id="task-id"> <!-- For editing -->
-                    
+    <!-- --- Task Modal (FIX V5) --- -->
+    <div id="task-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4" data-modal>
+        <div class="modal-backdrop fixed inset-0" data-modal-close></div>
+        <!-- 
+            MODAL FIX: 
+            - Centered with flex
+            - max-h-[90vh] to prevent overflow
+            - Internal flex-col layout
+        -->
+        <div class="modal-content animate-scale-in w-full max-w-lg p-6 rounded-xl flex flex-col max-h-[90vh] z-10">
+            <h2 id="task-modal-title" class="text-2xl font-bold text-primary mb-6 flex-shrink-0">Add New Task</h2>
+            <!-- Form scrolls independently -->
+            <form id="task-form" class="space-y-4 overflow-y-auto pr-2">
+                <input type="hidden" id="task-id">
+                
+                <div>
+                    <label for="task-title" class="text-sm font-semibold text-secondary">Task Title</label>
+                    <input type="text" id="task-title" class="input-premium w-full mt-1" placeholder="e.g., Design Sprint" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label for="task-name" class="text-sm font-medium text-sub">What are you doing?</label>
-                        <input type="text" id="task-name" placeholder="e.g., Deep Work Session" class="w-full p-3 mt-1 rounded-lg" required>
+                        <label for="task-start" class="text-sm font-semibold text-secondary">Start Time</label>
+                        <input type="time" id="task-start" class="input-premium w-full mt-1" required step="300">
                     </div>
-
-                    <!-- "AI" Suggestions -->
-                    <div id="suggestions-container" class="pt-1">
-                        <label class="text-sm font-medium text-sub">Suggestions</label>
-                        <div id="suggestions-chips" class="flex flex-wrap gap-2 mt-2">
-                            <!-- Chips injected here -->
-                        </div>
+                    <div>
+                        <label for="task-end" class="text-sm font-semibold text-secondary">End Time</label>
+                        <input type="time" id="task-end" class="input-premium w-full mt-1" required step="300">
                     </div>
-
-                    <!-- Time Inputs -->
-                    <div class="flex gap-4 w-full">
-                        <div class="w-1/2">
-                            <label for="start-time" class="text-sm font-medium text-sub">From</label>
-                            <input type="time" id="start-time" class="w-full p-3 mt-1 rounded-lg" required>
-                        </div>
-                        <div class="w-1/2">
-                            <label for="end-time" class="text-sm font-medium text-sub">To</label>
-                            <input type="time" id="end-time" class="w-full p-3 mt-1 rounded-lg" required>
-                        </div>
+                </div>
+                <div>
+                    <label for="task-category" class="text-sm font-semibold text-secondary">Category</label>
+                    <select id="task-category" class="input-premium w-full mt-1">
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="health">Health</option>
+                        <option value="break">Break</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-secondary">Checklist (To-Do)</label>
+                    <div id="todo-list-container" class="mt-2 space-y-2 max-h-32 overflow-y-auto"></div>
+                    <div class="flex gap-2 mt-2">
+                        <input type="text" id="new-todo-text" class="input-premium w-full" placeholder="Add a sub-task...">
+                        <button type="button" id="add-todo-btn" class="btn-neumorphic px-4 py-2 rounded-lg">Add</button>
                     </div>
-                    
-                    <!-- Action Buttons -->
-                    <div class="flex gap-4 pt-4">
-                        <button type="button" id="delete-task-btn" class="w-1/3 py-3 rounded-lg button-secondary font-semibold hidden">
-                            Delete
-                        </button>
-                        <button type="submit" id="save-task-btn" class="flex-grow py-3 rounded-lg button-primary font-semibold">
-                            Save Task
-                        </button>
-                    </div>
-                    
-                    <button type="button" id="finish-planning-btn" class="w-full py-3 rounded-lg font-semibold text-sub hover:text-main">
-                        I'm done planning for now
-                    </button>
-                </form>
-            </div>
+                </div>
+                <!-- Buttons are outside the scrolling area -->
+                <div class="flex justify-between items-center pt-4 flex-shrink-0">
+                    <button type="button" id="delete-task-btn" class="text-red-500 font-medium px-4 py-2 rounded-lg hidden hover:bg-red-500/10">Delete</button>
+                    <button type="submit" class="btn-primary px-6 py-3 rounded-lg ml-auto">Save Task</button>
+                </div>
+            </form>
         </div>
-        
-    </div> <!-- End Modal Container -->
+    </div>
 
+    <!-- --- Upsell Modal (FIX V5) --- -->
+    <div id="upsell-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4" data-modal>
+        <div class="modal-backdrop fixed inset-0" data-modal-close></div>
+        <!-- 
+            MODAL FIX: 
+            - Centered with flex
+            - max-h-[90vh] and overflow-y-auto
+        -->
+        <div class="modal-content animate-scale-in w-full max-w-2xl p-8 rounded-xl max-h-[90vh] overflow-y-auto z-10">
+            <h2 class="text-3xl font-extrabold text-primary text-center">Unlock Epoch <span class="text-primary-accent">Horizon</span></h2>
+            <p class="text-center text-secondary mt-2 mb-8">You're using the free plan. Upgrade once and own it for life.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Pro Plan -->
+                <div class="border-2 border-primary-accent rounded-xl p-6 relative bg-secondary">
+                    <span class="absolute top-0 -translate-y-1/2 bg-primary-accent text-white px-3 py-1 text-xs font-bold rounded-full">LIFETIME DEAL</span>
+                    <h3 class="text-2xl font-bold text-primary">Pro Lifetime</h3>
+                    <p class="text-5xl font-extrabold text-primary my-4">$299.99</p>
+                    <ul class="space-y-2 text-secondary text-sm mb-8">
+                        <li class="flex items-center gap-2 text-primary"><span>&#10003;</span> <strong>All Pro Features</strong></li>
+                        <li class="flex items-center gap-2 text-primary"><span>&#10003;</span> <strong>All Future AI Updates</strong></li>
+                        <li class="flex items-center gap-2 text-primary"><span>&#10003;</span> Cloud Sync & Backup</li>
+                        <li class="flex items-center gap-2 text-primary"><span>&#10003;</span> Premium Support</li>
+                    </ul>
+                    <button class="btn-primary w-full py-3 rounded-lg">Upgrade for Life</button>
+                </div>
+                <!-- Annual Plan -->
+                <div class="border border-border-primary rounded-xl p-6 bg-primary">
+                    <h3 class="text-2xl font-bold text-primary">Pro Annual</h3>
+                    <p class="text-5xl font-extrabold text-primary my-4">$99.99</p>
+                    <ul class="space-y-2 text-secondary text-sm mb-8">
+                        <li class="flex items-center gap-2 text-primary"><span>&#10003;</span> <strong>All Pro Features</strong></li>
+                        <li class="flex items-center gap-2 text-primary"><span>&#10003;</span> Cloud Sync & Backup</li>
+                        <li class="flex items-center gap-2 text-primary"><span>&#10003;</span> Standard Support</li>
+                    </ul>
+                    <button class="btn-neumorphic w-full py-3 rounded-lg">Start Annual Plan</button>
+                </div>
+            </div>
+            <button class="text-center text-tertiary text-sm mt-6 w-full" data-modal-close>Continue with free plan</button>
+        </div>
+    </div>
+    
     <script>
-        // Use an IIFE to scope variables and prevent global pollution
+        // --- SENIOR DEVELOPER: APP LOGIC V5 (MODAL FIX) ---
         (function() {
-            // --- STATE ---
-            let schedule = [];
-            let isContinuousPlanning = false;
-            let activeReminders = {}; // Store setTimeout IDs
+            'use strict';
 
-            // --- "AI" SUGGESTIONS ---
-            const suggestions = {
-                morning: ['Deep Work', 'Planning', 'Emails', 'Workout'],
-                noon: ['Lunch', 'Walk', 'Admin', 'Read'],
-                afternoon: ['Meetings', 'Project Work', 'Errands'],
-                evening: ['Cook', 'Social', 'Rest', 'Read'],
-                generic: ['Meditate', 'Journal', 'Hydrate', 'Break']
+            // --- 1. STATE MANAGEMENT ---
+            let appState = {
+                currentView: 'timeline',
+                selectedDate: new Date(),
+                tasks: [],
+                habits: [],
+                settings: {
+                    theme: 'theme-aurora',
+                    alarmSound: 'chime'
+                },
+                currentSoundscape: null
             };
 
-            // --- PURE SVG ICONS (NO DEPENDENCIES) ---
-            const icons = {
-                sun: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>`,
-                moon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>`,
-                plus: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>`,
-                trash: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>`,
-            };
-
-            // --- DOM ELEMENTS ---
+            // DOM Element Cache
             const $ = (selector) => document.querySelector(selector);
             const $$ = (selector) => document.querySelectorAll(selector);
-
+            
             const dom = {
-                html: document.documentElement,
-                themeToggle: $('#theme-toggle'),
-                todayDate: $('#today-date'),
-                scheduleList: $('#schedule-list'),
-                emptyStateTemplate: $('#empty-state-template'),
-                fabAdd: $('#fab-add'),
-                modalContainer: $('#modal-container'),
-                onboardingModal: $('#onboarding-modal'),
-                onboardingForm: $('#onboarding-form'),
+                views: $$('.app-view'),
+                navButtons: $$('.nav-btn'),
+                dateDisplay: $('#current-date-display'),
+                dayDisplay: $('#current-day-display'),
+                timelineContainer: $('#timeline-container'),
+                timelineHours: $('#timeline-hours'),
+                timelineTasks: $('#timeline-tasks'),
+                emptyStatePanel: $('#empty-state-panel'),
+                taskListContainer: $('#task-list-container'),
+                aiQuickAddForm: $('#ai-quick-add-form'),
+                aiQuickAddInput: $('#ai-quick-add-input'),
+                habitTrackerContainer: $('#habit-tracker-container'),
+                alarmSoundSelect: $('#alarm-sound'),
+                soundscapeBtn: $('#soundscape-btn'),
+                soundscapeVolume: $('#soundscape-volume'),
                 taskModal: $('#task-modal'),
-                taskForm: $('#task-form'),
                 taskModalTitle: $('#task-modal-title'),
+                taskForm: $('#task-form'),
                 taskId: $('#task-id'),
-                taskName: $('#task-name'),
-                startTime: $('#start-time'),
-                endTime: $('#end-time'),
+                taskTitle: $('#task-title'),
+                taskStart: $('#task-start'),
+                taskEnd: $('#task-end'),
+                taskCategory: $('#task-category'),
                 deleteTaskBtn: $('#delete-task-btn'),
-                finishPlanningBtn: $('#finish-planning-btn'),
-                suggestionsContainer: $('#suggestions-container'),
-                suggestionsChips: $('#suggestions-chips'),
+                todoListContainer: $('#todo-list-container'),
+                newTodoText: $('#new-todo-text'),
+                addTodoBtn: $('#add-todo-btn')
             };
 
-            // --- INITIALIZATION ---
+            let audioContext = null;
+            let lastBrownNoise = 0;
+            const hourHeight = 80;
+            let globalTickInterval = null;
+            let tempTodos = [];
+
+            // --- 2. INITIALIZATION ---
             document.addEventListener('DOMContentLoaded', () => {
-                // 1. Load state from localStorage
-                loadTheme();
-                loadSchedule();
-
-                // 2. Set up UI
-                dom.fabAdd.innerHTML = icons.plus;
-                updateThemeIcon();
-                updateTodayDate();
-                renderSchedule();
-
-                // 3. Set up event listeners
-                setupEventListeners();
-
-                // 4. Request notification permission
-                requestNotificationPermission();
+                try {
+                    loadState();
+                    applySettings();
+                    setupEventListeners();
+                    navigateTo(appState.currentView, true);
+                    startGlobalTicker();
+                    console.info("Epoch Horizon v5 (Modal Fix) initialized.");
+                } catch (error) {
+                    console.error("Critical error during initialization:", error);
+                    showPremiumAlert("Load Error", "Epoch Horizon failed to load.", "error");
+                }
             });
 
-            // --- EVENT LISTENERS ---
-            function setupEventListeners() {
-                dom.themeToggle.addEventListener('click', toggleTheme);
-                
-                // Modal triggers
-                dom.fabAdd.addEventListener('click', () => {
-                    isContinuousPlanning = false;
-                    const lastTask = schedule[schedule.length - 1];
-                    const nextStart = lastTask ? lastTask.end : '09:00';
-                    openTaskModal({ start: nextStart });
-                });
-                
-                // Note: The empty state button is added dynamically,
-                // so its listener is added in renderSchedule()
-                
-                // Onboarding
-                dom.onboardingForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const wakeUpTime = $('#wake-up').value;
-                    hideModal(dom.onboardingModal);
-                    
-                    isContinuousPlanning = true; // Start the flow
-                    openTaskModal({ start: wakeUpTime });
-                });
-
-                // Task Form
-                dom.taskForm.addEventListener('submit', handleTaskSave);
-                dom.deleteTaskBtn.addEventListener('click', handleDeleteTask);
-                dom.finishPlanningBtn.addEventListener('click', () => {
-                    isContinuousPlanning = false;
-                    hideModal(dom.taskModal);
-                });
-
-                // Close modal on backdrop click
-                $$('.modal-backdrop').forEach(backdrop => {
-                    backdrop.addEventListener('click', () => {
-                        isContinuousPlanning = false;
-                        hideModal(dom.onboardingModal);
-                        hideModal(dom.taskModal);
-                    });
-                });
+            function getAudioContext() {
+                if (audioContext) return audioContext;
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    return audioContext;
+                } catch (e) { console.warn("Web Audio API is not supported."); return null; }
             }
 
-            // --- THEME ---
-            function loadTheme() {
-                const savedTheme = localStorage.getItem('theme') || 'light';
-                dom.html.className = savedTheme;
-            }
+            function loadState() {
+                const savedTasks = localStorage.getItem('epoch_tasks');
+                const savedHabits = localStorage.getItem('epoch_habits');
+                const savedSettings = localStorage.getItem('epoch_settings');
 
-            function toggleTheme() {
-                dom.html.classList.toggle('dark');
-                dom.html.classList.toggle('light');
-                const newTheme = dom.html.classList.contains('dark') ? 'dark' : 'light';
-                localStorage.setItem('theme', newTheme);
-                updateThemeIcon();
-            }
-
-            function updateThemeIcon() {
-                if (dom.html.classList.contains('dark')) {
-                    dom.themeToggle.innerHTML = icons.sun;
+                if (savedTasks === null) {
+                    appState.tasks = [
+                        { id: 't1', date: getISODate(new Date()), title: 'Morning Deep Work', start: '09:00', end: '11:00', category: 'work', todos: [{id: 'sub1', text: 'Review PRs', done: false}] },
+                        { id: 't2', date: getISODate(new Date()), title: 'Gym Session', start: '12:00', end: '13:00', category: 'health', todos: [] }
+                    ];
+                    localStorage.setItem('epoch_tasks', JSON.stringify(appState.tasks));
                 } else {
-                    dom.themeToggle.innerHTML = icons.moon;
+                    appState.tasks = JSON.parse(savedTasks);
                 }
+
+                if (savedHabits === null) {
+                    appState.habits = [
+                        { id: 'h1', title: 'Meditate', daysCompleted: [] },
+                        { id: 'h2', title: 'Read 20 Mins', daysCompleted: [] }
+                    ];
+                    localStorage.setItem('epoch_habits', JSON.stringify(appState.habits));
+                } else {
+                    appState.habits = JSON.parse(savedHabits);
+                }
+
+                if (savedSettings) {
+                    appState.settings = JSON.parse(savedSettings);
+                }
+                appState.selectedDate = new Date();
             }
             
-            // --- UI & DATE ---
-            function updateTodayDate() {
-                const today = new Date();
-                dom.todayDate.textContent = today.toLocaleDateString(undefined, {
-                    weekday: 'long',
-                    month: 'long',
-                    day: 'numeric'
+            function saveState() {
+                localStorage.setItem('epoch_tasks', JSON.stringify(appState.tasks));
+                localStorage.setItem('epoch_habits', JSON.stringify(appState.habits));
+                localStorage.setItem('epoch_settings', JSON.stringify(appState.settings));
+            }
+
+            function applySettings() {
+                document.documentElement.className = appState.settings.theme;
+                $$('.theme-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.theme === appState.settings.theme);
+                });
+                dom.alarmSoundSelect.value = appState.settings.alarmSound;
+            }
+
+            // --- 3. NAVIGATION ---
+            function navigateTo(viewId, isInitialLoad = false) {
+                appState.currentView = viewId;
+                dom.views.forEach(v => v.classList.add('hidden'));
+                $(`#${viewId}-view`).classList.remove('hidden');
+                
+                dom.navButtons.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.view === viewId);
+                });
+                
+                switch (viewId) {
+                    case 'timeline': renderTimelineView(); break;
+                    case 'tasks': renderTasksView(); break;
+                    case 'habits': renderHabitsView(); break;
+                }
+            }
+
+            // --- 4. CORE RENDER FUNCTIONS ---
+            
+            function renderTimelineView() {
+                renderDateHeader();
+                renderTimelineHours();
+                renderTimelineTasks();
+            }
+
+            function renderDateHeader() {
+                dom.dateDisplay.textContent = appState.selectedDate.toLocaleDateString('en-US', {
+                    month: 'long', day: 'numeric', year: 'numeric'
+                });
+                dom.dayDisplay.textContent = appState.selectedDate.toLocaleDateString('en-US', {
+                    weekday: 'long'
                 });
             }
 
-            // --- MODALS ---
-            function showModal(modal) {
-                dom.modalContainer.classList.remove('hidden');
-                modal.classList.remove('hidden');
+            function renderTimelineHours() {
+                let hoursHTML = '';
+                for (let i = 0; i < 24; i++) {
+                    const ampmTime = new Date(0, 0, 0, i).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true });
+                    hoursHTML += `
+                        <div class="timeline-hour flex" style="height: ${hourHeight}px;">
+                            <div class="timeline-hour-label text-right pr-4 pt-1">
+                                ${ampmTime}
+                            </div>
+                            <div class="flex-grow"></div>
+                        </div>
+                    `;
+                }
+                dom.timelineHours.innerHTML = hoursHTML;
             }
 
-            function hideModal(modal) {
-                modal.classList.add('hidden');
-                // Check if any *other* modals are open
-                const anyModalOpen = $$('#modal-container > div:not(.hidden)').length > 0;
-                if (!anyModalOpen) {
-                    dom.modalContainer.classList.add('hidden');
+            function renderTimelineTasks() {
+                const tasksForDay = getTasksForDate(appState.selectedDate);
+                if (tasksForDay.length === 0) {
+                    dom.timelineTasks.innerHTML = '';
+                    dom.timelineContainer.classList.add('hidden');
+                    dom.emptyStatePanel.classList.remove('hidden');
+                } else {
+                    dom.timelineContainer.classList.remove('hidden');
+                    dom.emptyStatePanel.classList.add('hidden');
+                    let tasksHTML = '';
+                    tasksForDay.forEach((task, index) => {
+                        const startMinutes = timeToMinutes(task.start);
+                        const endMinutes = timeToMinutes(task.end);
+                        const top = (startMinutes / 60) * hourHeight;
+                        let height = ((endMinutes - startMinutes) / 60) * hourHeight;
+                        if (height < 30) height = 30;
+                        const progress = calculateTaskProgress(task);
+                        tasksHTML += `
+                            <div class="task-item animate-fade-slide-up rounded-lg p-2 md:p-3 cursor-pointer category-${task.category}"
+                                 style="top: ${top}px; height: ${height}px; animation-delay: ${index * 50}ms;"
+                                 data-task-id="${task.id}">
+                                <div class="h-full flex flex-col justify-between">
+                                    <div class="w-full bg-white/20 rounded-full h-1 overflow-hidden">
+                                        <div class="bg-white h-1 rounded-full" style="width: ${progress}%"></div>
+                                    </div>
+                                    <div class="flex-grow overflow-hidden pt-1">
+                                        <h3 class="font-bold text-sm truncate">${task.title}</h3>
+                                        <p class="text-xs opacity-80 truncate">${task.start} - ${task.end}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    dom.timelineTasks.innerHTML = tasksHTML;
                 }
             }
 
-            // --- TASK MANAGEMENT ---
-            function loadSchedule() {
-                schedule = JSON.parse(localStorage.getItem('schedule')) || [];
-                schedule.sort((a, b) => a.start.localeCompare(b.start)); // Sort by time
-            }
-
-            function saveSchedule() {
-                schedule.sort((a, b) => a.start.localeCompare(b.start));
-                localStorage.setItem('schedule', JSON.stringify(schedule));
-            }
-
-            function renderSchedule() {
-                dom.scheduleList.innerHTML = ''; // Clear list
-                clearReminders(); // Clear old reminders
+            function renderTasksView() {
+                const sortedTasks = [...appState.tasks].sort((a, b) => {
+                    const dateA = new Date(`${a.date}T00:00:00`);
+                    const dateB = new Date(`${b.date}T00:00:00`);
+                    if (dateA < dateB) return -1;
+                    if (dateA > dateB) return 1;
+                    return a.start.localeCompare(b.start);
+                });
                 
-                if (schedule.length === 0) {
-                    const emptyStateNode = dom.emptyStateTemplate.content.cloneNode(true);
-                    dom.scheduleList.appendChild(emptyStateNode);
-                    
-                    // Attach listener to the new empty state button
-                    $('#start-planning-empty').addEventListener('click', () => {
-                        showModal(dom.onboardingModal);
-                    });
+                if (sortedTasks.length === 0) {
+                     dom.taskListContainer.innerHTML = `
+                        <div class="timeline-card p-8 rounded-2xl text-center animate-fade-slide-up">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary-accent mx-auto mb-4"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                            <h3 class="text-xl font-bold text-primary mb-2">Inbox Zero</h3>
+                            <p class="text-secondary">You have no tasks. Use the magic bar above to add one!</p>
+                        </div>
+                    `;
                     return;
                 }
+                let tasksHTML = '';
+                let currentHeader = '';
+                sortedTasks.forEach(task => {
+                    const taskDate = new Date(`${task.date}T00:00:00`);
+                    const header = formatDateHeader(taskDate);
+                    if (header !== currentHeader) {
+                        currentHeader = header;
+                        tasksHTML += `<h3 class="text-lg font-bold text-primary mt-4">${header}</h3>`;
+                    }
+                    tasksHTML += `
+                        <div class="task-list-item flex items-center gap-3 p-4 rounded-lg" data-task-id="${task.id}">
+                            <input type="checkbox" id="task-check-${task.id}" class="task-inbox-check" data-task-id="${task.id}" ${task.todos.length > 0 && calculateTaskProgress(task) === 100 ? 'checked' : ''}>
+                            <label for="task-check-${task.id}" class="flex-grow cursor-pointer">
+                                <span class="font-medium text-primary">${task.title}</span>
+                                <p class="text-sm text-secondary">${task.start} - ${task.end}</p>
+                            </label>
+                            <button class="edit-task-btn btn-neumorphic p-2 rounded-lg" data-task-id="${task.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                            </button>
+                        </div>
+                    `;
+                });
+                dom.taskListContainer.innerHTML = tasksHTML;
+            }
 
-                schedule.forEach((task, index) => {
-                    const li = document.createElement('li');
-                    li.className = 'card rounded-lg p-4 flex items-center justify-between schedule-item-animation cursor-pointer';
-                    li.style.animationDelay = `${index * 50}ms`; // Stagger animation
-                    li.dataset.id = task.id;
-
-                    li.innerHTML = `
-                        <div class="flex items-center pointer-events-none"> <!-- pointer-events-none to pass click to li -->
-                            <div class="flex-shrink-0 w-16">
-                                <p class="font-semibold text-sm text-main">${formatTime(task.start)}</p>
-                                <p class="text-xs text-sub">to ${formatTime(task.end)}</p>
-                            </div>
-                            <div class="ml-4 border-l-2 pl-4" style="border-color: var(--primary);">
-                                <p class="font-medium text-main">${task.name}</p>
-                                <p class="text-sm text-sub">${getDuration(task.start, task.end)}</min>
+            function renderHabitsView() {
+                let habitsHTML = '';
+                appState.habits.forEach(habit => {
+                    habitsHTML += `
+                        <div class="p-4 rounded-lg bg-secondary border border-border-primary animate-fade-slide-up">
+                            <h3 class="text-lg font-semibold text-primary mb-3">${habit.title}</h3>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-secondary">This Week</span>
+                                <div class="flex gap-1.5">
+                                    ${[...Array(7)].map((_, i) => {
+                                        const date = new Date();
+                                        date.setDate(date.getDate() - (6 - i));
+                                        const iso = getISODate(date);
+                                        const isCompleted = habit.daysCompleted.includes(iso);
+                                        return `<div class="habit-day rounded-full ${isCompleted ? 'completed' : ''}" 
+                                                     data-habit-id="${habit.id}" data-date-iso="${iso}"
+                                                     title="${iso}"
+                                                     style="${iso === getISODate(new Date()) ? 'border-width: 2px; border-color: var(--primary-accent);' : ''}"></div>`;
+                                    }).join('')}
+                                </div>
                             </div>
                         </div>
-                        <button class="delete-btn p-2 rounded-full text-sub hover:text-red-500 z-10">
-                            ${icons.trash}
-                        </button>
                     `;
-                    
-                    // Add delete functionality
-                    li.querySelector('.delete-btn').addEventListener('click', (e) => {
-                        e.stopPropagation(); // Stop task click
-                        schedule = schedule.filter(t => t.id !== task.id);
-                        saveSchedule();
-                        renderSchedule();
-                    });
+                });
+                dom.habitTrackerContainer.innerHTML = habitsHTML;
+            }
 
-                    // Add edit functionality
-                    li.addEventListener('click', () => {
-                        isContinuousPlanning = false;
-                        openTaskModal(task);
+            // --- 5. EVENT LISTENERS ---
+            function setupEventListeners() {
+                dom.taskForm.addEventListener('submit', saveTask);
+                dom.addTodoBtn.addEventListener('click', addModalTodo);
+                dom.newTodoText.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') { e.preventDefault(); addModalTodo(); }
+                });
+                dom.deleteTaskBtn.addEventListener('click', deleteTask);
+                
+                $$('.theme-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        appState.settings.theme = e.currentTarget.dataset.theme;
+                        saveState();
+                        applySettings();
                     });
-                    
-                    dom.scheduleList.appendChild(li);
-                    
-                    // Set a reminder for this task
-                    setReminder(task);
+                });
+                dom.alarmSoundSelect.addEventListener('change', (e) => {
+                    appState.settings.alarmSound = e.target.value;
+                    saveState();
+                    playAlarm(appState.settings.alarmSound);
+                });
+                
+                dom.soundscapeBtn.addEventListener('click', toggleSoundscape);
+                dom.soundscapeVolume.addEventListener('input', (e) => {
+                    if (appState.currentSoundscape) {
+                        const ctx = getAudioContext();
+                        if (ctx) ctx.currentSoundscape.gainNode.gain.setValueAtTime(e.target.value, ctx.currentTime);
+                    }
+                });
+
+                $('#prev-day-btn').addEventListener('click', () => changeDate(-1));
+                $('#next-day-btn').addEventListener('click', () => changeDate(1));
+                
+                dom.aiQuickAddForm.addEventListener('submit', handleQuickAdd);
+                $('#ai-schedule-empty-btn').addEventListener('click', aiAutoSchedule);
+                
+                dom.navButtons.forEach(btn => {
+                    btn.addEventListener('click', () => navigateTo(btn.dataset.view));
+                });
+                
+                window.addEventListener('click', (e) => {
+                    const openBtn = e.target.closest('[data-modal-open]');
+                    if (openBtn) {
+                        const modalId = openBtn.dataset.modalOpen;
+                        if (modalId === 'task-modal') showTaskModal(null);
+                        else $(`#${modalId}`)?.classList.remove('hidden');
+                    }
+                    const closeBtn = e.target.closest('[data-modal-close]');
+                    if (closeBtn) {
+                        closeBtn.closest('[data-modal]').classList.add('hidden');
+                    }
+                });
+
+                dom.timelineTasks.addEventListener('click', (e) => {
+                    const taskEl = e.target.closest('.task-item');
+                    if (taskEl) {
+                        const task = appState.tasks.find(t => t.id === taskEl.dataset.taskId);
+                        if (task) showTaskModal(task);
+                    }
+                });
+
+                dom.taskListContainer.addEventListener('click', (e) => {
+                    const editBtn = e.target.closest('.edit-task-btn');
+                    if (editBtn) {
+                        const task = appState.tasks.find(t => t.id === editBtn.dataset.taskId);
+                        if (task) showTaskModal(task);
+                    }
+                });
+                
+                dom.taskListContainer.addEventListener('change', (e) => {
+                    const check = e.target.closest('.task-inbox-check');
+                    if (check) {
+                        const task = appState.tasks.find(t => t.id === check.dataset.taskId);
+                        if (task) {
+                            const allDone = check.checked;
+                            // A "check" in the inbox marks all subtasks as done.
+                            if (task.todos.length === 0 && allDone) {
+                                // If no todos, we can't uncheck. Just leave it.
+                                // Or, we could add a "hidden" todo
+                            }
+                            task.todos.forEach(t => t.done = allDone);
+                            saveState();
+                            renderTasksView();
+                            if (appState.currentView === 'timeline') renderTimelineView();
+                        }
+                    }
+                });
+
+                dom.habitTrackerContainer.addEventListener('click', (e) => {
+                    const habitDay = e.target.closest('.habit-day');
+                    if (habitDay) {
+                        toggleHabit(habitDay.dataset.habitId, habitDay.dataset.dateIso);
+                    }
+                });
+
+                dom.taskForm.addEventListener('change', (e) => {
+                    if (e.target.matches('[data-modal-todo-index]')) {
+                        const index = parseInt(e.target.dataset.modalTodoIndex, 10);
+                        if (e.target.type === 'checkbox') tempTodos[index].done = e.target.checked;
+                        if (e.target.type === 'text') tempTodos[index].text = e.target.value;
+                    }
+                });
+                dom.taskForm.addEventListener('click', (e) => {
+                    const deleteBtn = e.target.closest('[data-modal-todo-delete]');
+                    if (deleteBtn) {
+                        const index = parseInt(deleteBtn.dataset.modalTodoDelete, 10);
+                        tempTodos.splice(index, 1);
+                        renderModalTodoList();
+                    }
                 });
             }
 
-            function handleTaskSave(e) {
-                e.preventDefault();
-                
-                const task = {
-                    id: dom.taskId.value || `task-${Date.now()}`,
-                    name: dom.taskName.value,
-                    start: dom.startTime.value,
-                    end: dom.endTime.value
-                };
-
-                // Simple validation
-                if (!task.name || !task.start || !task.end) {
-                    alert("Please fill out all fields.");
-                    return;
-                }
-                
-                if (timeToMinutes(task.end) <= timeToMinutes(task.start)) {
-                    alert("End time must be after start time.");
-                    return;
-                }
-
-                if (checkConflict(task)) {
-                    // This is a more premium-feeling "alert"
-                    showTempAlert("Warning: This task overlaps with an existing task!");
-                }
-
-                // Find and replace if editing, or add new
-                const existingIndex = schedule.findIndex(t => t.id === task.id);
-                if (existingIndex > -1) {
-                    schedule[existingIndex] = task;
-                } else {
-                    schedule.push(task);
-                }
-
-                saveSchedule();
-                renderSchedule();
-
-                if (isContinuousPlanning) {
-                    // This is the "continuous" flow
-                    openTaskModal({ start: task.end }); // Open next modal
-                } else {
-                    hideModal(dom.taskModal);
-                }
-            }
-
-            function handleDeleteTask() {
-                const id = dom.taskId.value;
-                schedule = schedule.filter(t => t.id !== id);
-                saveSchedule();
-                renderSchedule();
-                hideModal(dom.taskModal);
-                isContinuousPlanning = false;
-            }
-
-            function openTaskModal(task) { // task = {id?, name?, start?, end?}
-                dom.taskId.value = task.id || '';
-                dom.taskName.value = task.name || '';
-                dom.startTime.value = task.start || '';
-                dom.endTime.value = task.end || (task.start ? addMinutes(task.start, 60) : '');
-                
-                if (task.id) {
-                    // Editing existing task
+            // --- 6. CORE LOGIC (TASK & TODO) ---
+            function showTaskModal(task = null) {
+                tempTodos = [];
+                if (task) {
                     dom.taskModalTitle.textContent = 'Edit Task';
+                    dom.taskId.value = task.id;
+                    dom.taskTitle.value = task.title;
+                    dom.taskStart.value = task.start;
+                    dom.taskEnd.value = task.end;
+                    dom.taskCategory.value = task.category;
                     dom.deleteTaskBtn.classList.remove('hidden');
+                    tempTodos = JSON.parse(JSON.stringify(task.todos));
                 } else {
-                    // Adding new task
-                    dom.taskModalTitle.textContent = isContinuousPlanning ? "What's next?" : "Add New Task";
+                    dom.taskModalTitle.textContent = 'Add New Task';
+                    dom.taskForm.reset();
+                    const now = new Date();
+                    dom.taskStart.value = `${now.getHours().toString().padStart(2, '0')}:00`;
+                    dom.taskEnd.value = `${(now.getHours() + 1).toString().padStart(2, '0')}:00`;
+                    dom.taskId.value = '';
                     dom.deleteTaskBtn.classList.add('hidden');
                 }
-                
-                populateSuggestions(task);
-                showModal(dom.taskModal);
-                dom.taskName.focus(); // Auto-focus
+                renderModalTodoList();
+                dom.taskModal.classList.remove('hidden');
             }
 
-            // --- "AI" SUGGESTIONS ---
-            function populateSuggestions(task) {
-                dom.suggestionsChips.innerHTML = '';
-                let suggestionSet = new Set(suggestions.generic);
-                
-                const startHour = parseInt((task.start || '09:00').split(':')[0]);
-                
-                if (startHour >= 5 && startHour < 12) {
-                    suggestions.morning.forEach(s => suggestionSet.add(s));
-                } else if (startHour >= 12 && startHour < 17) {
-                    suggestions.noon.forEach(s => suggestionSet.add(s));
-                } else if (startHour >= 17 && startHour < 21) {
-                    suggestions.evening.forEach(s => suggestionSet.add(s));
-                }
-
-                suggestionSet.forEach(text => {
-                    const chip = document.createElement('button');
-                    chip.type = 'button';
-                    chip.className = 'px-3 py-1 rounded-full text-sm';
-                    chip.style.backgroundColor = 'var(--bg)';
-                    chip.style.color = 'var(--text-secondary)';
-                    chip.textContent = text;
-                    chip.onclick = () => { dom.taskName.value = text; };
-                    dom.suggestionsChips.appendChild(chip);
-                });
+            function hideTaskModal() {
+                dom.taskModal.classList.add('hidden');
+            }
+            
+            function renderModalTodoList() {
+                dom.todoListContainer.innerHTML = tempTodos.map((todo, index) => `
+                    <div class="flex items-center gap-2 bg-primary p-2 rounded-lg">
+                        <input type="checkbox" id="modal-todo-${index}" data-modal-todo-index="${index}" ${todo.done ? 'checked' : ''}>
+                        <input type="text" value="${todo.text}" class="bg-transparent w-full text-secondary" data-modal-todo-index="${index}">
+                        <button type="button" class="text-red-500" data-modal-todo-delete="${index}">&times;</button>
+                    </div>
+                `).join('');
             }
 
-            // --- REMINDERS & NOTIFICATIONS ---
-            function requestNotificationPermission() {
-                if ('Notification' in window && Notification.permission !== 'denied') {
-                    Notification.requestPermission();
+            function addModalTodo() {
+                const text = dom.newTodoText.value;
+                if (text) {
+                    tempTodos.push({ id: `temp-${Date.now()}`, text: text, done: false });
+                    dom.newTodoText.value = '';
+                    renderModalTodoList();
                 }
             }
 
-            function clearReminders() {
-                Object.values(activeReminders).forEach(clearTimeout);
-                activeReminders = {};
-            }
-
-            function setReminder(task) {
-                const now = new Date();
-                const [hours, minutes] = task.start.split(':');
-                const taskTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
-                
-                const timeToTask = taskTime.getTime() - now.getTime();
-
-                if (timeToTask > 0) { // Only for future tasks
-                    const reminderID = setTimeout(() => {
-                        showNotification(task);
-                    }, timeToTask);
-                    activeReminders[task.id] = reminderID;
+            function saveTask(e) {
+                e.preventDefault();
+                const newTask = {
+                    id: dom.taskId.value || `t-${Date.now()}`,
+                    date: getISODate(appState.selectedDate),
+                    title: dom.taskTitle.value,
+                    start: dom.taskStart.value,
+                    end: dom.taskEnd.value,
+                    category: dom.taskCategory.value,
+                    todos: tempTodos
+                };
+                if (checkConflict(newTask)) {
+                    showPremiumAlert("Task Conflict", "This task overlaps with an existing task.", "error");
+                    return;
                 }
-            }
-
-            function showNotification(task) {
-                const body = `Your task "${task.name}" is starting now.`;
-                if ('Notification' in window && Notification.permission === 'granted') {
-                    new Notification('Task Reminder', { body: body });
+                const existingIndex = appState.tasks.findIndex(t => t.id === newTask.id);
+                if (existingIndex > -1) {
+                    appState.tasks[existingIndex] = newTask;
                 } else {
-                    // Fallback for when notifications are not granted
-                    // This is a custom toast-like alert. Much better than window.alert()
-                    showTempAlert(`Reminder: ${body}`);
+                    appState.tasks.push(newTask);
                 }
+                saveState();
+                if (appState.currentView === 'timeline') renderTimelineView();
+                if (appState.currentView === 'tasks') renderTasksView();
+                hideTaskModal();
+            }
+
+            function deleteTask() {
+                const id = dom.taskId.value;
+                appState.tasks = appState.tasks.filter(t => t.id !== id);
+                saveState();
+                if (appState.currentView === 'timeline') renderTimelineView();
+                if (appState.currentView === 'tasks') renderTasksView();
+                hideTaskModal();
             }
             
-            // --- CUSTOM ALERT (BETTER THAN window.alert()) ---
-            function showTempAlert(message) {
-                let alertBox = $('#temp-alert');
-                if (!alertBox) {
-                    alertBox = document.createElement('div');
-                    alertBox.id = 'temp-alert';
-                    alertBox.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-50 p-4 rounded-lg shadow-lg text-white font-medium';
-                    alertBox.style.backgroundColor = '#ef4444'; // Red
-                    document.body.appendChild(alertBox);
+            // --- 7. CORE LOGIC (DATE) ---
+            function changeDate(days) {
+                appState.selectedDate.setDate(appState.selectedDate.getDate() + days);
+                renderTimelineView();
+            }
+            
+            // --- 8. CORE LOGIC (HABITS) ---
+            function toggleHabit(habitId, dateISO) {
+                const habit = appState.habits.find(h => h.id === habitId);
+                if (!habit) return;
+                const dayIndex = habit.daysCompleted.indexOf(dateISO);
+                if (dayIndex > -1) habit.daysCompleted.splice(dayIndex, 1);
+                else habit.daysCompleted.push(dateISO);
+                saveState();
+                renderHabitsView();
+            }
+
+            // --- 9. CORE LOGIC (AI) ---
+            function handleQuickAdd(e) {
+                e.preventDefault();
+                const text = dom.aiQuickAddInput.value;
+                if (!text) return;
+                const task = parseQuickAdd(text);
+                if (checkConflict(task)) {
+                    showPremiumAlert("Task Conflict", "AI task overlaps with an existing task.", "error");
+                    return;
                 }
-                alertBox.textContent = message;
-                alertBox.style.opacity = '1';
-                alertBox.style.transition = 'opacity 0.3s';
+                appState.tasks.push(task);
+                saveState();
+                renderTasksView();
+                dom.aiQuickAddInput.value = '';
+                showPremiumAlert("AI Task Added", `"${task.title}" was added.`, "info");
+            }
+            
+            function parseQuickAdd(text) {
+                let title = text;
+                let start = '12:00';
+                let end = '13:00';
+                let date = getISODate(appState.selectedDate);
+                if (text.includes('tomorrow')) {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    date = getISODate(tomorrow);
+                    title = title.replace('tomorrow', '').trim();
+                }
+                const timeMatch = title.match(/at (\d{1,2}:\d{2})/);
+                if (timeMatch) {
+                    start = timeMatch[1];
+                    title = title.replace(timeMatch[0], '').trim();
+                    const startMins = timeToMinutes(start);
+                    end = minutesToTime(startMins + 60);
+                }
+                return {
+                    id: `t-${Date.now()}`, date: date, title: title || "AI Task",
+                    start: start, end: end, category: 'work', todos: []
+                };
+            }
+
+            function aiAutoSchedule() {
+                const date = getISODate(appState.selectedDate);
+                appState.tasks = appState.tasks.filter(t => t.date !== date);
+                const aiSchedule = [
+                    { id: `t-${Date.now()+1}`, date: date, title: 'Morning Routine & Plan', start: '08:00', end: '08:45', category: 'personal', todos: [] },
+                    { id: `t-${Date.now()+2}`, date: date, title: 'Deep Work Block 1', start: '09:00', end: '11:30', category: 'work', todos: [] },
+                    { id: `t-${Date.now()+3}`, date: date, title: 'Lunch & Walk', start: '12:00', end: '13:00', category: 'health', todos: [] },
+                ];
+                appState.tasks.push(...aiSchedule);
+                saveState();
+                renderTimelineView();
+                showPremiumAlert("AI Schedule Created", "Your day has been populated.", "info");
+            }
+            
+            // --- 10. AUDIO & ALARMS ---
+            function startGlobalTicker() {
+                if (globalTickInterval) clearInterval(globalTickInterval);
+                const tick = () => {
+                    const now = new Date();
+                    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                    const todayTasks = getTasksForDate(new Date());
+                    todayTasks.forEach(task => {
+                        if (task.start === currentTime) {
+                            playAlarm(appState.settings.alarmSound);
+                            showPremiumAlert("Task Starting!", `"${task.title}" is starting now.`, 'info');
+                        }
+                    });
+                };
+                tick();
+                globalTickInterval = setInterval(tick, 60 * 1000);
+            }
+
+            function playAlarm(soundName) {
+                const ctx = getAudioContext();
+                if (!ctx || soundName === 'none') return;
+                const o = ctx.createOscillator();
+                const g = ctx.createGain();
+                o.connect(g);
+                g.connect(ctx.destination);
+                const now = ctx.currentTime;
+                g.gain.setValueAtTime(0, now);
+                g.gain.linearRampToValueAtTime(0.5, now + 0.01);
+                if(soundName === 'chime') {
+                    o.type = 'sine'; o.frequency.setValueAtTime(1046.50, now); o.frequency.setValueAtTime(1396.91, now + 0.1);
+                } else if(soundName === 'sonar') {
+                    o.type = 'sine'; o.frequency.setValueAtTime(600, now); g.gain.setValueAtTime(0.5, now + 0.1); g.gain.linearRampToValueAtTime(0, now + 0.3);
+                } else if(soundName === 'synth') {
+                    o.type = 'triangle'; o.frequency.setValueAtTime(1318.51, now); o.frequency.setValueAtTime(1046.50, now + 0.1); o.frequency.setValueAtTime(783.99, now + 0.2);
+                }
+                o.start(now); o.stop(now + 0.5);
+            }
+
+            function toggleSoundscape() {
+                const ctx = getAudioContext();
+                if (!ctx) return;
                 
-                setTimeout(() => {
-                    alertBox.style.opacity = '0';
-                }, 3000);
-            }
-
-            // --- UTILITY FUNCTIONS ---
-            function formatTime(timeString) { // "14:30"
-                const [hours, minutes] = timeString.split(':').map(Number);
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                const h = hours % 12 === 0 ? 12 : hours % 12;
-                return `${h}:${String(minutes).padStart(2, '0')} ${ampm}`;
-            }
-
-            function timeToMinutes(time) { // "14:30" -> 870
-                const [hours, minutes] = time.split(':').map(Number);
-                return (hours * 60) + minutes;
-            }
-
-            function addMinutes(timeString, mins) {
-                let totalMins = timeToMinutes(timeString) + mins;
-                if (totalMins >= 1440) totalMins = 1439; // Cap at 23:59
-                const h = Math.floor(totalMins / 60);
-                const m = totalMins % 60;
-                return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-            }
-
-            function getDuration(start, end) {
-                const diff = timeToMinutes(end) - timeToMinutes(start);
-                if (diff <= 0) return '0m';
-                const h = Math.floor(diff / 60);
-                const m = diff % 60;
-                return (h > 0 ? `${h}h ` : '') + (m > 0 ? `${m}m` : '');
+                if (appState.currentSoundscape) {
+                    appState.currentSoundscape.noiseNode.stop();
+                    appState.currentSoundscape = null;
+                    dom.soundscapeBtn.textContent = 'Play Rain';
+                } else {
+                    const bufferSize = 4096;
+                    const noiseNode = ctx.createScriptProcessor(bufferSize, 1, 1);
+                    const gainNode = ctx.createGain();
+                    
+                    noiseNode.onaudioprocess = (e) => {
+                        const output = e.outputBuffer.getChannelData(0);
+                        for (let i = 0; i < bufferSize; i++) {
+                            const white = Math.random() * 2 - 1;
+                            lastBrownNoise = (lastBrownNoise + (0.02 * white)) / 1.02;
+                            output[i] = lastBrownNoise * 3.5;
+                        }
+                    };
+                    gainNode.gain.setValueAtTime(dom.soundscapeVolume.value, ctx.currentTime);
+                    noiseNode.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+                    appState.currentSoundscape = { noiseNode, gainNode };
+                    dom.soundscapeBtn.textContent = 'Stop Rain';
+                }
             }
             
-            function checkConflict(task) {
-                const startMins = timeToMinutes(task.start);
-                const endMins = timeToMinutes(task.end);
+            // --- 11. UTILITY FUNCTIONS ---
+            function showPremiumAlert(title, message, type = 'info') {
+                let alertBox = document.createElement('div');
+                alertBox.className = 'fixed top-4 right-4 z-[101] w-full max-w-sm p-4 rounded-xl panel-glass animate-fade-slide-up';
+                alertBox.style.cssText = `border-color: ${type === 'error' ? '#EF4444' : 'var(--primary-accent)'}; border-width: 2px; z-index: 1000;`;
+                alertBox.innerHTML = `<h4 class="font-bold text-primary">${title}</h4><p class="text-sm text-secondary">${message}</p>`;
+                document.body.appendChild(alertBox);
+                setTimeout(() => {
+                    alertBox.style.transition = 'opacity 0.5s, transform 0.5s';
+                    alertBox.style.opacity = '0';
+                    alertBox.style.transform = 'translateY(-20px)';
+                    setTimeout(() => alertBox.remove(), 500);
+                }, 4000);
+            }
 
-                return schedule.some(t => {
-                    if (t.id === task.id) return false; // Don't check against self
+            function getTasksForDate(date) {
+                const iso = getISODate(date);
+                return appState.tasks.filter(t => t.date === iso).sort((a, b) => a.start.localeCompare(b.start));
+            }
+            
+            function formatDateHeader(date) {
+                const today = new Date();
+                const tomorrow = new Date();
+                tomorrow.setDate(today.getDate() + 1);
+                
+                if (getISODate(date) === getISODate(today)) return 'Today';
+                if (getISODate(date) === getISODate(tomorrow)) return 'Tomorrow';
+                
+                return date.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' });
+            }
+
+            function checkConflict(task) {
+                const start = timeToMinutes(task.start);
+                const end = timeToMinutes(task.end);
+                return appState.tasks.some(t => {
+                    if (t.id === task.id || t.date !== task.date) return false;
                     const tStart = timeToMinutes(t.start);
                     const tEnd = timeToMinutes(t.end);
-                    // Check for overlap
-                    return (startMins < tEnd) && (endMins > tStart);
+                    return (start < tEnd) && (end > tStart);
                 });
             }
 
-        })(); // End of IIFE
+            function calculateTaskProgress(task) {
+                if (task.todos.length === 0) return 0; // Show 0% if no subtasks
+                const completed = task.todos.filter(t => t.done).length;
+                return Math.round((completed / task.todos.length) * 100);
+            }
+
+            function getISODate(date) {
+                return date.toISOString().split('T')[0];
+            }
+
+            function timeToMinutes(time) {
+                const [hours, minutes] = time.split(':').map(Number);
+                return hours * 60 + minutes;
+            }
+            
+            function minutesToTime(minutes) {
+                const h = Math.floor(minutes / 60) % 24;
+                const m = minutes % 60;
+                return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+            }
+
+        })();
     </script>
 </body>
 </html>
+
 
